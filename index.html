@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark scroll-smooth">
+<html lang="en" class="dark scroll-smooth overflow-x-hidden">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,6 +45,17 @@
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
   
   <style>
+    /* Prevent horizontal overflow on mobile */
+    html, body {
+      max-width: 100vw;
+      overflow-x: clip;
+    }
+    
+    /* Prevent AOS animations from causing overflow */
+    [data-aos] {
+      overflow: hidden;
+    }
+    
     /* Custom scrollbar */
     ::-webkit-scrollbar {
       width: 8px;
@@ -138,15 +149,18 @@
   </style>
 </head>
 
-<body class="bg-slate-900 text-slate-100 font-sans antialiased">
+<body class="bg-slate-900 text-slate-100 font-sans antialiased overflow-x-hidden max-w-full">
+  
+  <!-- Wrapper to prevent horizontal overflow -->
+  <div class="overflow-x-hidden w-full">
   
   <!-- ==================== HEADER ==================== -->
   <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
+      <div class="flex items-center justify-between h-16 gap-4">
         
         <!-- Logo -->
-        <a href="#" class="flex items-center space-x-2 group">
+        <a href="#" class="flex items-center space-x-2 group flex-shrink-0">
           
           <span class="text-xl font-semibold text-white">AttentioLight</span>
         </a>
@@ -195,7 +209,7 @@
         </div>
         
         <!-- Mobile Menu Button -->
-        <button id="mobile-menu-btn" class="md:hidden p-2 text-slate-400 hover:text-azure-400 transition-colors">
+        <button id="mobile-menu-btn" class="md:hidden p-3 text-slate-400 hover:text-azure-400 transition-colors flex-shrink-0">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
             <path id="menu-icon" d="M4 6h16M4 12h16M4 18h16"/>
           </svg>
@@ -230,7 +244,7 @@
   <section id="hero" class="min-h-screen flex items-center justify-center bg-gradient-animated relative overflow-hidden">
     <!-- Background glow effect -->
     <div class="absolute inset-0 overflow-hidden">
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-azure-500/10 rounded-full blur-3xl pulse-glow"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vw] sm:w-[450px] sm:h-[450px] lg:w-[600px] lg:h-[600px] bg-azure-500/10 rounded-full blur-3xl pulse-glow"></div>
     </div>
     
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
@@ -1786,5 +1800,6 @@
     });
   </script>
 
+  </div><!-- End wrapper -->
 </body>
 </html>
