@@ -104,7 +104,8 @@
     
     /* Tab active state */
     .tab-active {
-      border-bottom: 2px solid #38bdf8;
+      background-color: rgba(56, 189, 248, 0.2);
+      border: 1px solid rgba(56, 189, 248, 0.5);
       color: #38bdf8;
     }
     
@@ -808,11 +809,11 @@
       
       <!-- Tabs -->
       <div class="flex justify-center mb-8" data-aos="fade-up" data-aos-delay="200">
-        <div class="inline-flex bg-slate-800 rounded-lg p-1">
-          <button class="hardware-tab tab-active px-6 py-2 rounded-md text-sm font-medium transition-all" data-tab="pcb2d">2D View</button>
-          <button class="hardware-tab px-6 py-2 rounded-md text-sm font-medium text-slate-400 hover:text-white transition-all" data-tab="pcb">3D View</button>
-          <button class="hardware-tab px-6 py-2 rounded-md text-sm font-medium text-slate-400 hover:text-white transition-all" data-tab="schematic">PCB & Schematics (KiCanvas View)</button>
-          <button class="hardware-tab px-6 py-2 rounded-md text-sm font-medium text-slate-400 hover:text-white transition-all" data-tab="components">Key Components</button>
+        <div class="flex flex-wrap justify-center gap-1 bg-slate-800 rounded-lg p-1 max-w-xs sm:max-w-none">
+          <button class="hardware-tab tab-active px-4 sm:px-6 py-2 rounded-md text-sm font-medium transition-all" data-tab="pcb2d">2D View</button>
+          <button class="hardware-tab px-4 sm:px-6 py-2 rounded-md text-sm font-medium text-slate-400 hover:text-white transition-all" data-tab="pcb">3D View</button>
+          <button class="hardware-tab px-4 sm:px-6 py-2 rounded-md text-sm font-medium text-slate-400 hover:text-white transition-all" data-tab="schematic">PCB & Schematics</button>
+          <button class="hardware-tab px-4 sm:px-6 py-2 rounded-md text-sm font-medium text-slate-400 hover:text-white transition-all" data-tab="components">Key Components</button>
         </div>
       </div>
       
