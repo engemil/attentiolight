@@ -1,0 +1,1787 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AttentioLight - Your personal multi-use RGB light solution</title>
+  <meta name="description" content="Your personal multi-use RGB light solution. Use it as availability indicator, status updates, or ambient light. A handful of modes and animated effects. Open-source hardware, firmware, and CAD designs.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            azure: {
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- AOS - Animate On Scroll -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Google Model Viewer for 3D PCB -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+  
+  <style>
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+    
+    /* Azure glow effect */
+    .glow-azure {
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.3), 0 0 40px rgba(56, 189, 248, 0.1);
+    }
+    .glow-azure-sm {
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+    }
+    .text-glow-azure {
+      text-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+    }
+    
+    /* Animated background gradient */
+    .bg-gradient-animated {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      background-size: 200% 200%;
+      animation: gradientShift 8s ease infinite;
+    }
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    
+    /* Pulse glow animation */
+    .pulse-glow {
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
+      50% { box-shadow: 0 0 40px rgba(56, 189, 248, 0.4); }
+    }
+    
+    /* Tab active state */
+    .tab-active {
+      border-bottom: 2px solid #38bdf8;
+      color: #38bdf8;
+    }
+    
+    /* Sub-tab underline style */
+    .sub-tab {
+      position: relative;
+      padding: 0.5rem 1rem;
+      color: #94a3b8;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+      cursor: pointer;
+    }
+    .sub-tab:hover {
+      color: #e2e8f0;
+    }
+    .sub-tab::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 1rem;
+      right: 1rem;
+      height: 2px;
+      background-color: transparent;
+      transition: background-color 0.2s ease;
+    }
+    .sub-tab-active {
+      color: #38bdf8;
+    }
+    .sub-tab-active::after {
+      background-color: #38bdf8;
+    }
+    
+    /* Stack diagram layers */
+    .stack-layer {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .stack-layer:hover {
+      transform: translateX(8px);
+      box-shadow: -4px 0 0 #38bdf8;
+    }
+  </style>
+</head>
+
+<body class="bg-slate-900 text-slate-100 font-sans antialiased">
+  
+  <!-- ==================== HEADER ==================== -->
+  <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Logo -->
+        <a href="#" class="flex items-center space-x-2 group">
+          
+          <span class="text-xl font-semibold text-white">AttentioLight</span>
+        </a>
+        
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:flex items-center space-x-8">
+          <a href="#features" class="text-slate-300 hover:text-azure-400 transition-colors">Features</a>
+          <a href="#controls" class="text-slate-300 hover:text-azure-400 transition-colors">Controls</a>
+          <a href="#hardware" class="text-slate-300 hover:text-azure-400 transition-colors">Hardware</a>
+          <a href="#enclosure" class="text-slate-300 hover:text-azure-400 transition-colors">Enclosure</a>
+          <a href="#firmware" class="text-slate-300 hover:text-azure-400 transition-colors">Firmware</a>
+          <a href="#production" class="text-slate-300 hover:text-azure-400 transition-colors">Production</a>
+          <a href="#gallery" class="text-slate-300 hover:text-azure-400 transition-colors">Gallery</a>
+        </nav>
+        
+        <!-- Creator & Social Links -->
+        <div class="hidden md:flex items-center space-x-4">
+          <span class="text-slate-400 text-sm">Made by</span>
+          <a href="https://engemil.io" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-1 text-azure-400 hover:text-azure-300 transition-colors font-mono text-sm">
+            <span>EngEmil.io</span>
+          </a>
+          
+          <div class="flex items-center space-x-3 ml-4 pl-4 border-l border-slate-700">
+            <!-- GitHub -->
+            <a href="https://github.com/engemil" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-azure-400 transition-colors" title="GitHub">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            </a>
+            
+            <!-- LinkedIn (COMMENTED OUT - PLACEHOLDER: Add your LinkedIn URL and uncomment when ready)
+            <a href="#linkedin-placeholder" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-azure-400 transition-colors" title="LinkedIn">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </a>
+            -->
+            
+            <!-- YouTube -->
+            <a href="https://www.youtube.com/@EngEmil" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-azure-400 transition-colors" title="YouTube">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </a>
+            
+            <!-- Email -->
+            <a href="mailto:inquiry.engemil@gmail.com" class="text-slate-400 hover:text-azure-400 transition-colors" title="Contact">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </a>
+          </div>
+          
+        </div>
+        
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="md:hidden p-2 text-slate-400 hover:text-azure-400 transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path id="menu-icon" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-slate-900/95 backdrop-blur-sm border-t border-slate-800">
+      <div class="px-4 py-4 space-y-3">
+        <a href="#features" class="block text-slate-300 hover:text-azure-400 transition-colors py-2">Features</a>
+        <a href="#controls" class="block text-slate-300 hover:text-azure-400 transition-colors py-2">Controls</a>
+        <a href="#hardware" class="block text-slate-300 hover:text-azure-400 transition-colors py-2">Hardware</a>
+        <a href="#enclosure" class="block text-slate-300 hover:text-azure-400 transition-colors py-2">Enclosure</a>
+        <a href="#firmware" class="block text-slate-300 hover:text-azure-400 transition-colors py-2">Firmware</a>
+        <a href="#production" class="block text-slate-300 hover:text-azure-400 transition-colors py-2">Production</a>
+        <a href="#gallery" class="block text-slate-300 hover:text-azure-400 transition-colors py-2">Gallery</a>
+        <div class="pt-4 border-t border-slate-800">
+          <div class="flex items-center space-x-4">
+            <span class="text-slate-400 text-sm">Made by <span class="text-azure-400 font-mono">EngEmil.io</span></span>
+          </div>
+          <div class="flex items-center space-x-4 mt-3">
+            <a href="https://github.com/engemil" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-azure-400"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a>
+            <a href="https://engemil.io" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-azure-400"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== HERO SECTION ==================== -->
+  <section id="hero" class="min-h-screen flex items-center justify-center bg-gradient-animated relative overflow-hidden">
+    <!-- Background glow effect -->
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-azure-500/10 rounded-full blur-3xl pulse-glow"></div>
+    </div>
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
+      <div class="text-center">
+        <!-- Logo -->
+        <div class="mb-8" data-aos="fade-down" data-aos-duration="800">
+          
+        </div>
+        
+        <!-- Title -->
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
+          <span class="bg-gradient-to-r from-white via-azure-300 to-azure-400 bg-clip-text text-transparent">AttentioLight</span>
+        </h1>
+        
+        <!-- Tagline -->
+        <p class="text-xl sm:text-2xl text-slate-300 mb-8 max-w-2xl mx-auto" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
+          Your personal multi-use RGB light solution in an elegant enclosure. 
+        </p>
+        
+        
+        <!-- Subtitle -->
+        <p class="text-slate-400 mb-12 max-w-xl mx-auto" data-aos="fade-up" data-aos-duration="800" data-aos-delay="300">
+          Show your availability for others, receive status indications, or simply enjoy a variety of light effects.
+          With a handful of modes and animated effects. Open-source hardware and firmware.
+        </p>
+        <!-- Future
+        <p class="text-slate-400 mb-12 max-w-xl mx-auto" data-aos="fade-up" data-aos-duration="800" data-aos-delay="300">
+          Show your availability for others, receive status indications, use as a pomodoro timer, connect with 3rd party services, or simply enjoy a variety of light effects.
+          A handful of modes and animated effects. Built with STM32 + ChibiOS. Open-source hardware and firmware.
+        </p>
+         -->
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-col items-center gap-4 mb-16" data-aos="fade-up" data-aos-duration="800" data-aos-delay="400">
+          <!-- Primary row -->
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a href="#gallery" class="px-8 py-3 bg-azure-500 hover:bg-azure-600 text-white font-medium rounded-lg transition-all glow-azure-sm hover:glow-azure">
+              View Demo
+            </a>
+            <a href="https://github.com/engemil/attentiolight-1-hardware" target="_blank" rel="noopener noreferrer" class="px-8 py-3 border border-slate-600 hover:border-azure-500 text-slate-300 hover:text-azure-400 font-medium rounded-lg transition-all">
+              Hardware Repository
+            </a>
+            <a href="https://github.com/engemil/attentiolight-1-firmware" target="_blank" rel="noopener noreferrer" class="px-8 py-3 border border-slate-600 hover:border-azure-500 text-slate-300 hover:text-azure-400 font-medium rounded-lg transition-all">
+              Firmware Repository
+            </a>
+          </div>
+          <!-- Secondary row -->
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a href="https://github.com/engemil/ee_stm32_bootloader" target="_blank" rel="noopener noreferrer" class="px-8 py-3 border border-slate-600 hover:border-azure-500 text-slate-300 hover:text-azure-400 font-medium rounded-lg transition-all">
+              Bootloader Repository
+            </a>
+            <a href="https://cad.onshape.com/documents/69d5f926af4505f11014dd95/w/1130b3c1ea8f57afbf093472/e/eb91ab0ed3a92b95b73643b1" target="_blank" rel="noopener noreferrer" class="px-8 py-3 border border-slate-600 hover:border-azure-500 text-slate-300 hover:text-azure-400 font-medium rounded-lg transition-all">
+              CAD Design Document
+            </a>
+            <a href="https://makerworld.com/en/models/2448130-attentiolight-1-enclosure-1#profileId-2687342" target="_blank" rel="noopener noreferrer" class="px-8 py-3 border border-slate-600 hover:border-azure-500 text-slate-300 hover:text-azure-400 font-medium rounded-lg transition-all">
+              3D-Print Files
+            </a>
+          </div>
+        </div>
+        
+        <!-- Hero Image/Video -->
+        <div class="max-w-3xl mx-auto" data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="500">
+          <div class="relative rounded-2xl overflow-hidden glow-azure">
+            <img 
+              src="assets/images/hero/hero_image_001.png" 
+              alt="AttentioLight LED box in action"
+              class="w-full h-auto"
+            >
+            <!-- Or use a video:
+            <video autoplay loop muted playsinline class="w-full h-auto">
+              <source src="assets/videos/hero-demo.mp4" type="video/mp4">
+            </video>
+            -->
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+      <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ==================== FEATURES SECTION ==================== -->
+  <section id="features" class="py-20 bg-slate-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4" data-aos="fade-up">Features</h2>
+        <div class="w-20 h-1 bg-azure-500 mx-auto rounded-full" data-aos="fade-up" data-aos-delay="100"></div>
+      </div>
+      
+      <!-- Feature Cards - Row 1 -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        
+        <!-- Feature 1: Standalone Application -->
+        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="100">
+          <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Standalone Application</h3>
+          <p class="text-slate-400 text-sm">Works independently without external devices. Just plug in an USB-C cable and go!</p>
+        </div>
+        
+        <!-- Feature 2: 7 Modes -->
+        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="200">
+          <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">7 Modes</h3>
+          <p class="text-slate-400 text-sm">Solid Color, Brightness, Blinking, Pulsation, Effects, Traffic Light, and Night Light</p>
+        </div>
+        
+        <!-- Feature 3: 12 Colors -->
+        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="300">
+          <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">12 Vibrant Colors</h3>
+          <p class="text-slate-400 text-sm">Azure, Blue, Purple, Magenta, Pink, Red, Orange, Yellow, Lime, Green, Spring, Cyan</p>
+        </div>
+        
+        <!-- Feature 4: 13 Effects -->
+        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="400">
+          <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">13 Animated Effects</h3>
+          <p class="text-slate-400 text-sm">Rainbow, Color Cycle, Breathing, Candle, Fire, Lava Lamp, Day/Night, Ocean, Northern Lights, Thunder Storm, Police, Health Pulse, Memory</p>
+        </div>
+        
+      </div>
+      
+      <!-- Feature Cards - Row 2 -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        
+        <!-- Feature 5: Diffused Lighting -->
+        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="100">
+          <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Diffused Lighting</h3>
+          <p class="text-slate-400 text-sm">Soft and even light distribution through 3D-printed diffuser top</p>
+        </div>
+        
+        <!-- Feature 6: Enclosure Design -->
+        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="200">
+          <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Enclosure Design</h3>
+          <p class="text-slate-400 text-sm">Modular 3D-printed enclosure with easy swapping of different diffuser top sizes</p>
+        </div>
+        
+        <!-- Feature 7: Status Indicator -->
+        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="300">
+          <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Status Indicator</h3>
+          <p class="text-slate-400 text-sm">Show your availability in real-life with the easy Traffic Light mode (Green/Yellow/Red)</p>
+        </div>
+        
+        <!-- Feature 8: One-Button Control -->
+        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="400">
+          <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">One-Button Control</h3>
+          <p class="text-slate-400 text-sm">Elegant and intuitive control with a single button for all standalone functions</p>
+        </div>
+        
+      </div>
+      
+      <!-- Feature Cards - Row 3 -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+        
+        <!-- Feature 9: USB-C Powered -->
+        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="100">
+          <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">USB-C Powered</h3>
+          <p class="text-slate-400 text-sm">Power and serial communication via modern USB-C connector. Debug output available over USB serial port</p>
+        </div>
+        
+        <!-- Feature 10: USB DFU Firmware Update -->
+        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="200">
+          <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">USB Firmware Updates</h3>
+          <p class="text-slate-400 text-sm">Update firmware over USB using DFU (Device Firmware Upgrade) protocol with bootloader. No special programmer needed</p>
+        </div>
+        
+        <!-- Feature 11: Bootloader Integration -->
+        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="300">
+          <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Bootloader Integration</h3>
+          <p class="text-slate-400 text-sm">Special designed bootloader with CRC32 integrity check, version management, and seamless firmware upgrade support</p>
+        </div>
+        
+        <!-- Feature 12: Persistent Data Storage -->
+        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="400">
+          <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Persistent Data Storage</h3>
+          <p class="text-slate-400 text-sm">Settings saved to internal flash with CRC32 integrity checking</p>
+          <!-- Future
+          <p class="text-slate-400 text-sm">Settings saved to internal flash with CRC32 integrity checking. Factory default restoration available</p>
+          -->
+        </div>
+        
+      </div>
+      
+      <!-- Feature Cards - Row 4 (three cards centered) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:max-w-4xl lg:mx-auto">
+        
+        <!-- Feature 13: Low Power Mode -->
+        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="100">
+          <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Low Power Mode</h3>
+          <p class="text-slate-400 text-sm">Power off with low power mode, keeping previous activities intact</p>
+        </div>
+        
+        <!-- Feature 14: WiFi & BLE Ready -->
+        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="200">
+          <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">WiFi & BLE Ready</h3>
+          <p class="text-slate-400 text-sm">ESP32-C3 module onboard for future wireless connectivity and smart integrations</p>
+        </div>
+        
+        <!-- Feature 15: Open Source -->
+        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="300">
+          <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-azure-400" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Open Source</h3>
+          <p class="text-slate-400 text-sm">Hardware (KiCad), firmware (ChibiOS), and enclosure (OnShape) designs all publicly available</p>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== HOW IT WORKS SECTION ==================== -->
+  <section id="controls" class="py-20 bg-slate-800/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4" data-aos="fade-up">How It Works</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+          Simple one-button control for all modes and settings in Standalone operation. No app or external device needed. Just plug in an USB-C cable and go!
+        </p>
+        <div class="w-20 h-1 bg-azure-500 mx-auto rounded-full mt-4" data-aos="fade-up" data-aos-delay="150"></div>
+      </div>
+      
+      <!-- Button Controls & Mode Sequence Row -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+        
+        <!-- Button Controls -->
+        <div data-aos="fade-right" data-aos-delay="200">
+          <h3 class="text-2xl font-semibold text-white mb-6">Button Controls</h3>
+          <div class="space-y-4">
+            <div class="bg-slate-800/50 rounded-lg border border-slate-700 p-4 flex items-center gap-4">
+              <div class="flex-shrink-0 w-16 h-16 bg-azure-500/20 rounded-lg flex items-center justify-center">
+                <span class="text-azure-400 text-sm font-mono">&lt;1s</span>
+              </div>
+              <div>
+                <h4 class="text-white font-medium">Short Press</h4>
+                <p class="text-slate-400 text-sm">Cycle through options in the current mode (color, speed, brightness, effects, etc.)</p>
+              </div>
+            </div>
+            <div class="bg-slate-800/50 rounded-lg border border-slate-700 p-4 flex items-center gap-4">
+              <div class="flex-shrink-0 w-16 h-16 bg-azure-500/20 rounded-lg flex items-center justify-center">
+                <span class="text-azure-400 text-sm font-mono">2-5s</span>
+              </div>
+              <div>
+                <h4 class="text-white font-medium">Long Press</h4>
+                <p class="text-slate-400 text-sm">Switch to next mode (white flash indicates threshold reached at 2s)</p>
+              </div>
+            </div>
+            <div class="bg-slate-800/50 rounded-lg border border-slate-700 p-4 flex items-center gap-4">
+              <div class="flex-shrink-0 w-16 h-16 bg-azure-500/20 rounded-lg flex items-center justify-center">
+                <span class="text-azure-400 text-sm font-mono">&ge;5s</span>
+              </div>
+              <div>
+                <h4 class="text-white font-medium">Extended Press</h4>
+                <p class="text-slate-400 text-sm">Power off the device (indicated with the power-down animation)</p>
+              </div>
+            </div>
+            <div class="bg-slate-800/50 rounded-lg border border-slate-700 p-4 flex items-center gap-4">
+              <div class="flex-shrink-0 w-16 h-16 bg-slate-700/50 rounded-lg flex items-center justify-center">
+                <span class="text-slate-400 text-sm font-mono">2s</span>
+              </div>
+              <div>
+                <h4 class="text-white font-medium">Wake Up (when OFF)</h4>
+                <p class="text-slate-400 text-sm">Long press to wake device from sleep (indicated with the power-up animation)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Mode Sequence & LED Feedback -->
+        <div data-aos="fade-left" data-aos-delay="300">
+          <h3 class="text-2xl font-semibold text-white mb-6">Mode Sequence</h3>
+          <div class="bg-slate-800/50 rounded-xl border border-slate-700 p-6">
+            <p class="text-slate-400 text-sm mb-6">Modes cycle via long press (wraps after last mode):</p>
+            
+            <!-- Mode Flow Diagram -->
+            <div class="flex flex-wrap items-center justify-center gap-2 text-sm">
+              <span class="px-3 py-2 bg-azure-500/20 text-azure-300 rounded-lg border border-azure-500/30">Solid Color</span>
+              <span class="text-slate-500">&rarr;</span>
+              <span class="px-3 py-2 bg-azure-500/20 text-azure-300 rounded-lg border border-azure-500/30">Brightness</span>
+              <span class="text-slate-500">&rarr;</span>
+              <span class="px-3 py-2 bg-azure-500/20 text-azure-300 rounded-lg border border-azure-500/30">Blinking</span>
+              <span class="text-slate-500">&rarr;</span>
+              <span class="px-3 py-2 bg-azure-500/20 text-azure-300 rounded-lg border border-azure-500/30">Pulsation</span>
+              <span class="text-slate-500">&rarr;</span>
+              <span class="px-3 py-2 bg-azure-500/20 text-azure-300 rounded-lg border border-azure-500/30">Effects</span>
+              <span class="text-slate-500">&rarr;</span>
+              <span class="px-3 py-2 bg-azure-500/20 text-azure-300 rounded-lg border border-azure-500/30">Traffic Light</span>
+              <span class="text-slate-500">&rarr;</span>
+              <span class="px-3 py-2 bg-azure-500/20 text-azure-300 rounded-lg border border-azure-500/30">Night Light</span>
+            </div>
+            
+            <!-- LED Feedback -->
+            <div class="mt-8 pt-6 border-t border-slate-700">
+              <h4 class="text-white font-medium mb-4">LED Feedback</h4>
+              <ul class="space-y-2 text-sm">
+                <li class="flex items-center gap-3">
+                  <span class="w-3 h-3 bg-white rounded-full"></span>
+                  <span class="text-slate-300"><span class="text-white font-medium">White flash</span> &mdash; Ready to switch mode</span>
+                </li>
+                <li class="flex items-center gap-3">
+                  <span class="w-3 h-3 bg-gradient-to-r from-red-500 via-yellow-500 to-blue-500 rounded-full"></span>
+                  <span class="text-slate-300"><span class="text-white font-medium">Rainbow power-up</span> &mdash; Power up animation</span>
+                </li>
+                <li class="flex items-center gap-3">
+                  <span class="w-3 h-3 bg-amber-500 rounded-full"></span>
+                  <span class="text-slate-300"><span class="text-white font-medium">Amber power-down</span> &mdash; Power down animation</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      
+      <!-- Mode Details Section -->
+      <div>
+        <h3 class="text-2xl font-semibold text-white mb-8 text-center" data-aos="fade-up">Mode Details</h3>
+        
+        <!-- Mode Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          
+          <!-- Mode 1: Solid Color -->
+          <div class="bg-slate-800/50 rounded-xl border border-slate-700 p-6 hover:border-azure-500/50 transition-all" data-aos="fade-up" data-aos-delay="100">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 bg-azure-500/20 rounded-lg flex items-center justify-center">
+                <span class="text-azure-400 font-bold">1</span>
+              </div>
+              <h4 class="text-lg font-semibold text-white">Solid Color</h4>
+            </div>
+            <p class="text-slate-400 text-sm mb-4">Display a single static color. Short press cycles through 12 available colors.</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="w-6 h-6 rounded-full bg-sky-400 border border-white/20" title="Azure"></span>
+              <span class="w-6 h-6 rounded-full bg-blue-600 border border-white/20" title="Blue"></span>
+              <span class="w-6 h-6 rounded-full bg-purple-600 border border-white/20" title="Purple"></span>
+              <span class="w-6 h-6 rounded-full bg-fuchsia-600 border border-white/20" title="Magenta"></span>
+              <span class="w-6 h-6 rounded-full bg-pink-400 border border-white/20" title="Pink"></span>
+              <span class="w-6 h-6 rounded-full bg-red-500 border border-white/20" title="Red"></span>
+              <span class="w-6 h-6 rounded-full bg-orange-500 border border-white/20" title="Orange"></span>
+              <span class="w-6 h-6 rounded-full bg-yellow-400 border border-white/20" title="Yellow"></span>
+              <span class="w-6 h-6 rounded-full bg-lime-400 border border-white/20" title="Lime"></span>
+              <span class="w-6 h-6 rounded-full bg-green-500 border border-white/20" title="Green"></span>
+              <span class="w-6 h-6 rounded-full bg-emerald-400 border border-white/20" title="Spring"></span>
+              <span class="w-6 h-6 rounded-full bg-cyan-400 border border-white/20" title="Cyan"></span>
+            </div>
+          </div>
+          
+          <!-- Mode 2: Brightness -->
+          <div class="bg-slate-800/50 rounded-xl border border-slate-700 p-6 hover:border-azure-500/50 transition-all" data-aos="fade-up" data-aos-delay="150">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 bg-azure-500/20 rounded-lg flex items-center justify-center">
+                <span class="text-azure-400 font-bold">2</span>
+              </div>
+              <h4 class="text-lg font-semibold text-white">Brightness</h4>
+            </div>
+            <p class="text-slate-400 text-sm mb-4">Adjust the global brightness level. Short press cycles through brightness levels.</p>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+              <div class="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-slate-600 via-azure-500 to-white rounded-full"></div>
+              </div>
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            </div>
+          </div>
+          
+          <!-- Mode 3: Blinking -->
+          <div class="bg-slate-800/50 rounded-xl border border-slate-700 p-6 hover:border-azure-500/50 transition-all" data-aos="fade-up" data-aos-delay="200">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 bg-azure-500/20 rounded-lg flex items-center justify-center">
+                <span class="text-azure-400 font-bold">3</span>
+              </div>
+              <h4 class="text-lg font-semibold text-white">Blinking</h4>
+            </div>
+            <p class="text-slate-400 text-sm mb-4">Blink the current color on and off. Short press cycles through different blink speeds.</p>
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              <div class="flex-1 flex items-end gap-1 h-4">
+                <div class="flex-1 h-1 bg-azure-400/50 rounded-sm"></div>
+                <div class="flex-1 h-1.5 bg-azure-400/60 rounded-sm"></div>
+                <div class="flex-1 h-2 bg-azure-400/70 rounded-sm"></div>
+                <div class="flex-1 h-2.5 bg-azure-400/80 rounded-sm"></div>
+                <div class="flex-1 h-3 bg-azure-400/90 rounded-sm"></div>
+                <div class="flex-1 h-4 bg-azure-400 rounded-sm"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Mode 4: Pulsation -->
+          <div class="bg-slate-800/50 rounded-xl border border-slate-700 p-6 hover:border-azure-500/50 transition-all" data-aos="fade-up" data-aos-delay="250">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 bg-azure-500/20 rounded-lg flex items-center justify-center">
+                <span class="text-azure-400 font-bold">4</span>
+              </div>
+              <h4 class="text-lg font-semibold text-white">Pulsation</h4>
+            </div>
+            <p class="text-slate-400 text-sm mb-4">Smoothly fade brightness up and down. Short press cycles through different pulse speeds.</p>
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              <div class="flex-1 h-4 bg-slate-700 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-azure-400/20 via-azure-400 to-azure-400/20 rounded-full"></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Mode 5: Effects -->
+          <div class="bg-slate-800/50 rounded-xl border border-slate-700 p-6 hover:border-azure-500/50 transition-all" data-aos="fade-up" data-aos-delay="300">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 bg-azure-500/20 rounded-lg flex items-center justify-center">
+                <span class="text-azure-400 font-bold">5</span>
+              </div>
+              <h4 class="text-lg font-semibold text-white">Effects</h4>
+            </div>
+            <p class="text-slate-400 text-sm mb-4">Animated lighting effects. Short press cycles through 13 different effects.</p>
+            <div class="flex flex-wrap gap-1.5">
+              <span class="px-2 py-0.5 bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 text-white text-xs rounded-full">Rainbow</span>
+              <span class="px-2 py-0.5 bg-purple-500/30 text-purple-300 text-xs rounded-full border border-purple-500/50">Color Cycle</span>
+              <span class="px-2 py-0.5 bg-blue-500/30 text-blue-300 text-xs rounded-full border border-blue-500/50">Breathing</span>
+              <span class="px-2 py-0.5 bg-orange-500/30 text-orange-300 text-xs rounded-full border border-orange-500/50">Candle</span>
+              <span class="px-2 py-0.5 bg-red-500/30 text-red-300 text-xs rounded-full border border-red-500/50">Fire</span>
+              <span class="px-2 py-0.5 bg-pink-500/30 text-pink-300 text-xs rounded-full border border-pink-500/50">Lava Lamp</span>
+              <span class="px-2 py-0.5 bg-amber-500/30 text-amber-300 text-xs rounded-full border border-amber-500/50">Day/Night</span>
+              <span class="px-2 py-0.5 bg-cyan-500/30 text-cyan-300 text-xs rounded-full border border-cyan-500/50">Ocean</span>
+              <span class="px-2 py-0.5 bg-green-500/30 text-green-300 text-xs rounded-full border border-green-500/50">Northern Lights</span>
+              <span class="px-2 py-0.5 bg-slate-500/30 text-slate-300 text-xs rounded-full border border-slate-500/50">Thunder Storm</span>
+              <span class="px-2 py-0.5 bg-blue-600/30 text-blue-300 text-xs rounded-full border border-blue-600/50">Police</span>
+              <span class="px-2 py-0.5 bg-red-600/30 text-red-300 text-xs rounded-full border border-red-600/50">Health Pulse</span>
+              <span class="px-2 py-0.5 bg-violet-500/30 text-violet-300 text-xs rounded-full border border-violet-500/50">Memory</span>
+            </div>
+          </div>
+          
+          <!-- Mode 6: Traffic Light -->
+          <div class="bg-slate-800/50 rounded-xl border border-slate-700 p-6 hover:border-azure-500/50 transition-all" data-aos="fade-up" data-aos-delay="350">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 bg-azure-500/20 rounded-lg flex items-center justify-center">
+                <span class="text-azure-400 font-bold">6</span>
+              </div>
+              <h4 class="text-lg font-semibold text-white">Traffic Light</h4>
+            </div>
+            <p class="text-slate-400 text-sm mb-4">Quick availability indicator. Short press cycles through green, yellow, and red.</p>
+            <div class="flex items-center gap-3">
+              <span class="w-8 h-8 rounded-full bg-green-500 border-2 border-white/20 flex items-center justify-center text-white text-xs font-bold">Go</span>
+              <span class="text-slate-500">&rarr;</span>
+              <span class="w-8 h-8 rounded-full bg-yellow-400 border-2 border-white/20 flex items-center justify-center text-slate-900 text-xs font-bold">?</span>
+              <span class="text-slate-500">&rarr;</span>
+              <span class="w-8 h-8 rounded-full bg-red-500 border-2 border-white/20 flex items-center justify-center text-white text-xs font-bold">No</span>
+            </div>
+          </div>
+          
+          <!-- Mode 7: Night Light -->
+          <div class="bg-slate-800/50 rounded-xl border border-slate-700 p-6 hover:border-azure-500/50 transition-all md:col-start-2 lg:col-start-auto" data-aos="fade-up" data-aos-delay="400">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 bg-azure-500/20 rounded-lg flex items-center justify-center">
+                <span class="text-azure-400 font-bold">7</span>
+              </div>
+              <h4 class="text-lg font-semibold text-white">Night Light</h4>
+            </div>
+            <p class="text-slate-400 text-sm mb-4">Warm, dim light for nighttime use. Short press adjusts the warm white intensity.</p>
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-amber-400" fill="currentColor" viewBox="0 0 24 24"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+              <div class="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
+                <div class="h-full w-1/2 bg-gradient-to-r from-amber-400 to-transparent rounded-l-full"></div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== HARDWARE SECTION ==================== -->
+  <section id="hardware" class="py-20 bg-slate-800/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4" data-aos="fade-up">Hardware Design</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+          PCB designed in KiCad featuring STM32C071RB MCU and ESP32-C3 wireless module
+        </p>
+        <div class="w-20 h-1 bg-azure-500 mx-auto rounded-full mt-4" data-aos="fade-up" data-aos-delay="150"></div>
+      </div>
+      
+      <!-- Tabs -->
+      <div class="flex justify-center mb-8" data-aos="fade-up" data-aos-delay="200">
+        <div class="inline-flex bg-slate-800 rounded-lg p-1">
+          <button class="hardware-tab tab-active px-6 py-2 rounded-md text-sm font-medium transition-all" data-tab="pcb2d">2D View</button>
+          <button class="hardware-tab px-6 py-2 rounded-md text-sm font-medium text-slate-400 hover:text-white transition-all" data-tab="pcb">3D View</button>
+          <button class="hardware-tab px-6 py-2 rounded-md text-sm font-medium text-slate-400 hover:text-white transition-all" data-tab="schematic">PCB & Schematics (KiCanvas View)</button>
+          <button class="hardware-tab px-6 py-2 rounded-md text-sm font-medium text-slate-400 hover:text-white transition-all" data-tab="components">Key Components</button>
+        </div>
+      </div>
+      
+      <!-- Tab Content -->
+      <div class="hardware-content" data-aos="fade-left" data-aos-delay="300">
+        
+        <!-- 3D View Tab -->
+        <div id="tab-pcb" class="hardware-panel hidden">
+          <!-- Sub-tabs for board selection -->
+          <div class="flex justify-center mb-6 border-b border-slate-700">
+            <button class="sub-tab sub-tab-active pcb-sub-tab" data-board="mainboard">Mainboard-1</button>
+            <button class="sub-tab pcb-sub-tab" data-board="ledmodule">1-LED Module-1</button>
+          </div>
+          
+          <!-- Mainboard 3D View -->
+          <div id="pcb-mainboard" class="pcb-board-panel">
+            <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden">
+              <model-viewer
+                src="assets/3dview/attentiolight-1-mainboard1.glb"
+                alt="AttentioLight Mainboard-1 3D Model"
+                camera-controls
+                loading="lazy"
+                shadow-intensity="0"
+                exposure="0.8"
+                style="width: 100%; height: 600px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);"
+              ></model-viewer>
+            </div>
+            <p class="text-center text-slate-400 text-sm mt-4">Click and drag to rotate. Scroll to zoom. Right-click to pan.</p>
+          </div>
+          
+          <!-- LED Module 3D View -->
+          <div id="pcb-ledmodule" class="pcb-board-panel hidden">
+            <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden">
+              <model-viewer
+                src="assets/3dview/attentiolight-1-1ledmodule1.glb"
+                alt="AttentioLight 1-LED Module-1 3D Model"
+                camera-controls
+                loading="lazy"
+                shadow-intensity="0"
+                exposure="0.8"
+                style="width: 100%; height: 600px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);"
+              ></model-viewer>
+            </div>
+            <p class="text-center text-slate-400 text-sm mt-4">Click and drag to rotate. Scroll to zoom. Right-click to pan.</p>
+          </div>
+          
+          <div class="mt-4 flex flex-wrap gap-4 justify-center">
+            <a href="https://github.com/engemil/attentiolight-1-hardware" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm text-slate-300 transition-colors">
+              <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              View Hardware Repository
+            </a>
+          </div>
+        </div>
+        
+        <!-- 2D View Tab -->
+        <div id="tab-pcb2d" class="hardware-panel">
+          <!-- Sub-tabs for board selection -->
+          <div class="flex justify-center mb-6 border-b border-slate-700">
+            <button class="sub-tab sub-tab-active pcb2d-sub-tab" data-board="mainboard">Mainboard-1</button>
+            <button class="sub-tab pcb2d-sub-tab" data-board="ledmodule">1-LED Module-1</button>
+          </div>
+          
+          <!-- Mainboard 2D View -->
+          <div id="pcb2d-mainboard" class="pcb2d-board-panel">
+            <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden p-6">
+              <!-- PCB Images - Front and Back side by side -->
+              <div class="flex flex-col md:flex-row justify-center items-center gap-8">
+                <div class="flex flex-col items-center">
+                  <img src="assets/images/pcb/pcb1_profile_front.png" alt="Mainboard-1 PCB Front" class="max-h-[400px] object-contain rounded-lg">
+                  <p class="text-slate-400 text-sm mt-2">Front</p>
+                </div>
+                <div class="flex flex-col items-center">
+                  <img src="assets/images/pcb/pcb1_profile_back.png" alt="Mainboard-1 PCB Back" class="max-h-[400px] object-contain rounded-lg">
+                  <p class="text-slate-400 text-sm mt-2">Back</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- LED Module 2D View -->
+          <div id="pcb2d-ledmodule" class="pcb2d-board-panel hidden">
+            <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden p-6">
+              <!-- PCB Images - Front and Back side by side -->
+              <div class="flex flex-col md:flex-row justify-center items-center gap-8">
+                <div class="flex flex-col items-center">
+                  <img src="assets/images/pcb/pcb2_profile_front.png" alt="1-LED Module-1 PCB Front" class="max-h-[400px] object-contain rounded-lg">
+                  <p class="text-slate-400 text-sm mt-2">Front</p>
+                </div>
+                <div class="flex flex-col items-center">
+                  <img src="assets/images/pcb/pcb2_profile_back.png" alt="1-LED Module-1 PCB Back" class="max-h-[400px] object-contain rounded-lg">
+                  <p class="text-slate-400 text-sm mt-2">Back</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-4 flex flex-wrap gap-4 justify-center">
+            <a href="https://github.com/engemil/attentiolight-1-hardware" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm text-slate-300 transition-colors">
+              <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              View Hardware Repository
+            </a>
+          </div>
+        </div>
+        
+        <!-- Schematic Tab -->
+        <div id="tab-schematic" class="hardware-panel hidden">
+          <!-- Sub-tabs for board selection -->
+          <div class="flex justify-center mb-6 border-b border-slate-700">
+            <button class="sub-tab sub-tab-active schematic-sub-tab" data-board="mainboard">Mainboard-1</button>
+            <button class="sub-tab schematic-sub-tab" data-board="ledmodule">1-LED Module-1</button>
+          </div>
+          
+          <!-- Mainboard Schematic -->
+          <div id="schematic-mainboard" class="schematic-board-panel">
+            <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden">
+              <iframe 
+                src="https://kicanvas.org/?github=https://github.com/engemil/attentiolight-1-hardware/tree/main/attentiolight-1-mainboard1&theme=kicad"
+                class="w-full h-[600px] border-0"
+                loading="lazy"
+                title="AttentioLight Mainboard-1 PCB & Schematics - Interactive View"
+              ></iframe>
+            </div>
+          </div>
+          
+          <!-- LED Module Schematic -->
+          <div id="schematic-ledmodule" class="schematic-board-panel hidden">
+            <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden">
+              <iframe 
+                src="https://kicanvas.org/?github=https://github.com/engemil/attentiolight-1-hardware/tree/main/attentiolight-1-1ledmodule1&theme=kicad"
+                class="w-full h-[600px] border-0"
+                loading="lazy"
+                title="AttentioLight 1-LED Module-1 PCB & Schematics - Interactive View"
+              ></iframe>
+            </div>
+          </div>
+          
+          <div class="mt-6 flex flex-wrap gap-4 justify-center">
+            <a href="https://github.com/engemil/attentiolight-1-hardware/tree/main/pdfs" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm text-slate-300 transition-colors">
+              View PCB and Schematic PDFs
+              <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Components Tab -->
+        <div id="tab-components" class="hardware-panel hidden">
+          <div class="bg-slate-800/50 rounded-xl border border-slate-700 p-6">
+            <h3 class="text-lg font-semibold text-white mb-6">Key Components</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left">
+                <thead>
+                  <tr class="border-b border-slate-700">
+                    <th class="pb-3 text-slate-400 font-medium">Component</th>
+                    <th class="pb-3 text-slate-400 font-medium">Part Number</th>
+                    <th class="pb-3 text-slate-400 font-medium">Description</th>
+                  </tr>
+                </thead>
+                <tbody class="text-slate-300">
+                  <tr class="border-b border-slate-700/50">
+                    <td class="py-3">MCU</td>
+                    <td class="py-3 font-mono text-azure-400">STM32C071RBT6</td>
+                    <td class="py-3">ARM Cortex-M0+ @ 48MHz, 128KB Flash, 24KB RAM</td>
+                  </tr>
+                  <tr class="border-b border-slate-700/50">
+                    <td class="py-3">WiFi & BLE</td>
+                    <td class="py-3 font-mono text-azure-400">ESP32-C3-WROOM-02-N4</td>
+                    <td class="py-3">WiFi 802.11 b/g/n & Bluetooth 5 (LE) module</td>
+                  </tr>
+                  <tr class="border-b border-slate-700/50">
+                    <td class="py-3">LEDs</td>
+                    <td class="py-3 font-mono text-azure-400">WS2812B</td>
+                    <td class="py-3">Addressable RGB LEDs (modular LED module)</td>
+                  </tr>
+                  <tr class="border-b border-slate-700/50">
+                    <td class="py-3">USB</td>
+                    <td class="py-3 font-mono text-azure-400">USB-C</td>
+                    <td class="py-3">USB 2.0 Full Speed - Power & Serial Communication</td>
+                  </tr>
+                  <tr class="border-b border-slate-700/50">
+                    <td class="py-3">Oscillators</td>
+                    <td class="py-3 font-mono text-azure-400">48MHz HSE / 32.768kHz LSE</td>
+                    <td class="py-3">High-speed & low-speed external crystals</td>
+                  </tr>
+                  <tr class="border-b border-slate-700/50">
+                    <td class="py-3">User Button</td>
+                    <td class="py-3 font-mono text-azure-400">Tactile Switch</td>
+                    <td class="py-3">Front-mounted user input button</td>
+                  </tr>
+                  <tr>
+                    <td class="py-3">Debug</td>
+                    <td class="py-3 font-mono text-azure-400">SWD / JTAG / USB</td>
+                    <td class="py-3">3x programming connectors (STM32 SWD, ESP32 JTAG & USB)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="mt-6 flex justify-center">
+              <a href="https://github.com/engemil/attentiolight-1-hardware/tree/main/manufacturing" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm text-slate-300 transition-colors">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                View Manufacturing Files & BOM
+              </a>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== ENCLOSURE SECTION ==================== -->
+  <section id="enclosure" class="py-20 bg-slate-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4" data-aos="fade-up">Enclosure Design</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+          Enclosure designed with OnShape and 3D-printed in three parts: translucent diffuser top, solid base, and user button
+        </p>
+        <div class="w-20 h-1 bg-azure-500 mx-auto rounded-full mt-4" data-aos="fade-up" data-aos-delay="150"></div>
+      </div>
+      
+      <!-- Content Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+        
+        <!-- CAD Viewer / Image -->
+        <div data-aos="fade-right" data-aos-delay="200">
+          <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden">
+            <img 
+              src="assets/images/enclosure/enclosure_onshape_001.png" 
+              alt="AttentioLight Enclosure CAD Design"
+              class="w-full h-auto"
+            >
+            <!-- Or use a rotating GIF/video:
+            <video autoplay loop muted playsinline class="w-full h-auto">
+              <source src="assets/videos/enclosure-rotation.mp4" type="video/mp4">
+            </video>
+            -->
+          </div>
+          <div class="mt-6 flex justify-center">
+            <a href="https://cad.onshape.com/documents/69d5f926af4505f11014dd95/w/1130b3c1ea8f57afbf093472/e/eb91ab0ed3a92b95b73643b1" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 border border-slate-600 hover:border-azure-500 text-slate-300 hover:text-azure-400 rounded-lg text-sm transition-all">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+              View in OnShape
+            </a>
+          </div>
+        </div>
+        
+        <!-- Feature List -->
+        <div data-aos="fade-left" data-aos-delay="300">
+          <h3 class="text-2xl font-semibold text-white mb-6">Design Features</h3>
+          <ul class="space-y-4">
+            <li class="flex items-start">
+              <div class="flex-shrink-0 w-8 h-8 bg-azure-500/20 rounded-lg flex items-center justify-center mr-4">
+                <svg class="w-4 h-4 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <div>
+                <h4 class="text-white font-medium">Compact Dimensions</h4>
+                <p class="text-slate-400 text-sm">57 x 57 x 41 mm (W x L x H), 58 mm (L) w/ button</p>
+              </div>
+            </li>
+            <li class="flex items-start">
+              <div class="flex-shrink-0 w-8 h-8 bg-azure-500/20 rounded-lg flex items-center justify-center mr-4">
+                <svg class="w-4 h-4 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <div>
+                <h4 class="text-white font-medium">Diffuser Top</h4>
+                <p class="text-slate-400 text-sm">Translucent top piece for soft and even light distribution</p>
+              </div>
+            </li>
+            <li class="flex items-start">
+              <div class="flex-shrink-0 w-8 h-8 bg-azure-500/20 rounded-lg flex items-center justify-center mr-4">
+                <svg class="w-4 h-4 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <div>
+                <h4 class="text-white font-medium">Base</h4>
+                <p class="text-slate-400 text-sm">Simplistic and elegant housing for the internal components</p>
+              </div>
+            </li>
+            <li class="flex items-start">
+              <div class="flex-shrink-0 w-8 h-8 bg-azure-500/20 rounded-lg flex items-center justify-center mr-4">
+                <svg class="w-4 h-4 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <div>
+                <h4 class="text-white font-medium">User Button</h4>
+                <p class="text-slate-400 text-sm">Intuitive button integrated in front of the enclosure</p>
+              </div>
+            </li>
+            <li class="flex items-start">
+              <div class="flex-shrink-0 w-8 h-8 bg-azure-500/20 rounded-lg flex items-center justify-center mr-4">
+                <svg class="w-4 h-4 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <div>
+                <h4 class="text-white font-medium">Threaded Insert Slots</h4>
+                <p class="text-slate-400 text-sm">For mechanical ruggedness, ensuring durable user button and USB-C connector</p>
+              </div>
+            </li>
+            <li class="flex items-start">
+              <div class="flex-shrink-0 w-8 h-8 bg-azure-500/20 rounded-lg flex items-center justify-center mr-4">
+                <svg class="w-4 h-4 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <div>
+                <h4 class="text-white font-medium">Snap-Fit Assembly</h4>
+                <p class="text-slate-400 text-sm">Tool-free assembly with snap-fit joints for the base and diffuser top</p>
+              </div>
+            </li>
+            <li class="flex items-start">
+              <div class="flex-shrink-0 w-8 h-8 bg-azure-500/20 rounded-lg flex items-center justify-center mr-4">
+                <svg class="w-4 h-4 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <div>
+                <h4 class="text-white font-medium">Reset Button Access</h4>
+                <p class="text-slate-400 text-sm">Pinhole on the back for reset button</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FIRMWARE SECTION ==================== -->
+  <section id="firmware" class="py-20 bg-slate-800/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4" data-aos="fade-up">Firmware Architecture</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+          Real-time firmware built with ChibiOS/RT on STM32, with bootloader integration for easy firmware updates with USB DFU.
+        </p>
+        <div class="w-20 h-1 bg-azure-500 mx-auto rounded-full mt-4" data-aos="fade-up" data-aos-delay="150"></div>
+      </div>
+      
+      <!-- Stack Diagram -->
+      <div class="max-w-4xl mx-auto" data-aos="fade-up" data-aos-delay="200">
+        <div class="bg-slate-800/50 rounded-xl border border-slate-700 p-6 sm:p-8">
+          
+          <!-- Application Layer -->
+          <div class="stack-layer bg-slate-700/50 border border-slate-600 rounded-lg p-4 mb-3 cursor-default" data-aos="fade-right" data-aos-delay="300">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div>
+                <span class="text-azure-400 font-mono text-sm font-semibold">APPLICATION LAYER</span>
+                <div class="mt-3 space-y-2">
+                  <div class="flex flex-wrap gap-2">
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">State Machine & Thread</span>
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">Modes and Effects</span>
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">Animation Thread</span>
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">Button Thread</span>
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">Persistent Data (EFL)</span>
+                  </div>
+                </div>
+              </div>
+              <span class="text-slate-500 text-xs sm:text-sm">User Code</span>
+            </div>
+          </div>
+          
+          <!-- Application Drivers Layer -->
+          <div class="stack-layer bg-slate-700/50 border border-slate-600 rounded-lg p-4 mb-3 cursor-default" data-aos="fade-right" data-aos-delay="350">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div>
+                <span class="text-azure-400 font-mono text-sm font-semibold">APPLICATION DRIVERS</span>
+                <div class="flex flex-wrap gap-2 mt-2">
+                  <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">WS2812B LED Driver (SPI+DMA)</span>
+                  <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">Button Driver</span>
+                </div>
+              </div>
+              <span class="text-slate-500 text-xs sm:text-sm">Drivers</span>
+            </div>
+          </div>
+          
+          <!-- App Header Layer -->
+          <div class="stack-layer bg-slate-700/50 border border-slate-600 rounded-lg p-4 mb-3 cursor-default" data-aos="fade-right" data-aos-delay="400">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div>
+                <span class="text-azure-400 font-mono text-sm font-semibold">APP HEADER</span>
+                <div class="flex flex-wrap gap-2 mt-2">
+                  <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">Magic number</span>
+                  <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">App Version</span>
+                  <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">App Size</span>
+                  <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">CRC32</span>
+                  <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">USB VID/PID</span>
+                </div>
+              </div>
+              <span class="text-slate-500 text-xs sm:text-sm">32 bytes @ 0x08004000</span>
+            </div>
+          </div>
+          
+          <!-- Libraries Layer -->
+          <div class="stack-layer bg-slate-700/50 border border-slate-600 rounded-lg p-4 mb-3 cursor-default" data-aos="fade-right" data-aos-delay="450">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div>
+                <span class="text-azure-400 font-mono text-sm font-semibold">LIBRARIES</span>
+                <div class="flex flex-wrap gap-2 mt-2">
+                  <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">hal_efl_stm32c0xx (custom)</span>
+                  <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">USB (CDC)</span>
+                  <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">ESP32 WiFi/BLE Interface</span>
+                </div>
+              </div>
+              <span class="text-slate-500 text-xs sm:text-sm">Libraries</span>
+            </div>
+          </div>
+          
+          <!-- RTOS Layer -->
+          <div class="stack-layer bg-slate-700/50 border border-slate-600 rounded-lg p-4 mb-3 cursor-default" data-aos="fade-right" data-aos-delay="500">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div>
+                <span class="text-azure-400 font-mono text-sm font-semibold">ChibiOS/RT+HAL+LL</span>
+                <div class="flex flex-wrap gap-2 mt-2">
+                  <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">RT Kernel (threads, semaphores, events, etc.)</span>
+                  <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">HAL (GPIO, SPI, USB, PWR, EFL, etc.)</span>
+                  <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">LL Drivers (RCC, EXTI, DMA, etc.)</span>
+                  <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">STM32C0xx port</span>
+                </div>
+              </div>
+              <span class="text-slate-500 text-xs sm:text-sm">RTOS</span>
+            </div>
+          </div>
+          
+          <!-- Hardware Layer -->
+          <div class="stack-layer bg-slate-700/50 border border-azure-500/50 rounded-lg p-4 cursor-default" data-aos="fade-right" data-aos-delay="600">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div>
+                <span class="text-azure-400 font-mono text-sm font-semibold">STM32C071RB HARDWARE</span>
+                <div class="flex flex-wrap gap-2 mt-2">
+                  <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">ARM Cortex-M0+</span>
+                  <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">48MHz</span>
+                  <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">128KB Flash</span>
+                  <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">24KB RAM</span>
+                </div>
+              </div>
+              <span class="text-slate-500 text-xs sm:text-sm">MCU</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Firmware Repo Links -->
+        <div class="flex flex-wrap justify-center gap-4 mt-8" data-aos="fade-up" data-aos-delay="800">
+          <a href="https://github.com/engemil/attentiolight-1-firmware" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm text-slate-300 transition-colors">
+            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            View Firmware Repository
+          </a>
+          <a href="https://github.com/engemil/ee_stm32_bootloader" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm text-slate-300 transition-colors">
+            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            View Bootloader Repository
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PRODUCTION SECTION ==================== -->
+  <section id="production" class="py-20 bg-slate-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4" data-aos="fade-up">Production</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+          Everything you need to build your own AttentioLight from PCB fabrication to final assembly
+        </p>
+        <div class="w-20 h-1 bg-azure-500 mx-auto rounded-full mt-4" data-aos="fade-up" data-aos-delay="150"></div>
+      </div>
+      
+      <!-- Row 1: PCB Manufacturing & 3D-Printing -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        
+        <!-- PCB Manufacturing Card -->
+        <div class="bg-slate-800/50 rounded-xl border border-slate-700 p-6 hover:border-azure-500/50 transition-colors flex flex-col" data-aos="fade-up" data-aos-delay="200">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-white">PCB Manufacturing</h3>
+          </div>
+
+          <div class="mb-4 rounded-lg overflow-hidden">
+            <img 
+              src="assets/images/production/production_soldering_001.png" 
+              alt="AttentioLight PCB"
+              class="w-full h-auto"
+            >
+          </div>
+          
+          <div class="space-y-3 text-slate-400 text-sm">
+            <p>Designed for manual and production pick-and-place assembly</p>
+            <ul class="space-y-2">
+              <li class="flex items-center gap-2">
+                <span class="text-azure-400 flex-shrink-0">•</span>
+                <span>50x50mm (W x L)</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="text-azure-400 flex-shrink-0">•</span>
+                <span>4-layer PCB, 1.6mm thickness</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="text-azure-400 flex-shrink-0">•</span>
+                <span>LeadFree HASL surface finish</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="text-azure-400 flex-shrink-0">•</span>
+                <span>Solder paste applicable with stencil</span>
+              </li>
+              <li class="flex items-center gap-2">
+                <span class="text-azure-400 flex-shrink-0">•</span>
+                <span>Hotplate reflow soldering</span>
+              </li>
+            </ul>
+          </div>
+          
+          <a href="https://github.com/engemil/attentiolight-1-hardware/tree/main/manufacturing" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-auto pt-4 text-azure-400 hover:text-azure-300 text-sm transition-colors">
+            <span>Gerber Files</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+        
+        <!-- 3D-Printing Card -->
+        <div class="bg-slate-800/50 rounded-xl border border-slate-700 p-6 hover:border-azure-500/50 transition-colors flex flex-col" data-aos="fade-up" data-aos-delay="300">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-white">3D-Printing</h3>
+          </div>
+          
+          <div class="mb-4 rounded-lg overflow-hidden">
+            <img 
+              src="/assets/images/production/3d_print_preview.png" 
+              alt="3D-Printed Enclosure"
+              class="w-full h-auto"
+            >
+          </div>
+          
+          <div class="space-y-3 text-slate-400 text-sm">
+            <p>Recommended print settings for the enclosure:</p>
+            <div class="grid grid-cols-2 gap-2">
+              <div class="bg-slate-700/50 rounded px-3 py-2">
+                <span class="text-slate-500 text-xs">Material 1</span>
+                <p class="text-slate-300">PETG Translucent / PC Transparent</p>
+              </div>
+              <div class="bg-slate-700/50 rounded px-3 py-2">
+                <span class="text-slate-500 text-xs">Material 2</span>
+                <p class="text-slate-300">PLA</p>
+              </div>
+              <div class="bg-slate-700/50 rounded px-3 py-2">
+                <span class="text-slate-500 text-xs">Nozzle</span>
+                <p class="text-slate-300">0.4mm</p>
+              </div>
+              <div class="bg-slate-700/50 rounded px-3 py-2">
+                <span class="text-slate-500 text-xs">Layer Height</span>
+                <p class="text-slate-300">0.16mm</p>
+              </div>
+              <div class="bg-slate-700/50 rounded px-3 py-2">
+                <span class="text-slate-500 text-xs">Supports</span>
+                <p class="text-slate-300">None</p>
+              </div>
+            </div>
+          </div>
+          
+          <a href="https://makerworld.com/en/models/2448130-attentiolight-1-enclosure-1#profileId-2687342" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-auto pt-4 text-azure-400 hover:text-azure-300 text-sm transition-colors">
+            <span>3D-Print Files (3MF & STL) Files and BOM</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+        
+      </div>
+      
+      <!-- Row 2: Assembly Instructions (full width) -->
+      <div class="grid grid-cols-1 gap-8">
+        
+        <!-- Assembly Instructions Card -->
+        <div class="bg-slate-800/50 rounded-xl border border-slate-700 p-6 hover:border-azure-500/50 transition-colors" data-aos="fade-up" data-aos-delay="400">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-white">Assembly Instructions</h3>
+          </div>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="rounded-lg overflow-hidden">
+              <img 
+                src="/assets/images/production/assembly_001.png" 
+                alt="AttentioLight Assembly"
+                class="w-full h-auto"
+              >
+            </div>
+            
+            <div class="space-y-4 text-slate-400 text-sm">
+              <p>Follow these steps to assemble your AttentioLight:</p>
+              
+              <ol class="space-y-3">
+                <li class="flex items-start gap-3">
+                  <span class="flex-shrink-0 w-6 h-6 bg-azure-500/20 rounded-full flex items-center justify-center text-azure-400 text-xs font-semibold">1</span>
+                  <span>Solder SMD and through-hole components to the PCBs (or order pre-assembled)</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="flex-shrink-0 w-6 h-6 bg-azure-500/20 rounded-full flex items-center justify-center text-azure-400 text-xs font-semibold">2</span>
+                  <span>Assemble the PCBs by connecting the LED Module PCB to the Mainboard PCB</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="flex-shrink-0 w-6 h-6 bg-azure-500/20 rounded-full flex items-center justify-center text-azure-400 text-xs font-semibold">3</span>
+                  <span>In the enclosure base, insert the threaded inserts with a soldering iron or heat tool</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="flex-shrink-0 w-6 h-6 bg-azure-500/20 rounded-full flex items-center justify-center text-azure-400 text-xs font-semibold">4</span>
+                  <span>On the enclosure user button, snap-off the support pin and place the button from the inside of the enclosure base in the button hole, and with the snapped-off side facing down</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="flex-shrink-0 w-6 h-6 bg-azure-500/20 rounded-full flex items-center justify-center text-azure-400 text-xs font-semibold">5</span>
+                  <span>Place the assembled PCBs together in the enclosure base, and use screws to attach the PCBs to the base</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="flex-shrink-0 w-6 h-6 bg-azure-500/20 rounded-full flex items-center justify-center text-azure-400 text-xs font-semibold">6</span>
+                  <span>Power-up the device by inserting a USB-C cable on the back side of the enclosure base, from a computer</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="flex-shrink-0 w-6 h-6 bg-azure-500/20 rounded-full flex items-center justify-center text-azure-400 text-xs font-semibold">7</span>
+                  <span>Connect a debug probe (e.g. ST-Link) to SWD connector, flash the bootloader firmware onto the device, and disconnect the debug probe</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="flex-shrink-0 w-6 h-6 bg-azure-500/20 rounded-full flex items-center justify-center text-azure-400 text-xs font-semibold">8</span>
+                  <span>Snap-on the diffuser top to the enclosure base</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="flex-shrink-0 w-6 h-6 bg-azure-500/20 rounded-full flex items-center justify-center text-azure-400 text-xs font-semibold">9</span>
+                  <span>With the USB-C cable connected to a computer, flash application firmware over USB w/ USB DFU (integrated in bootloader)</span>
+                </li>
+              </ol>
+              
+              <p class="pt-2 text-slate-400 text-sm">
+                For more details about flashing the firmware, visit the <a href="https://github.com/engemil/attentiolight-1-firmware" target="_blank" rel="noopener noreferrer" class="text-azure-400 hover:text-azure-300 transition-colors">firmware repository</a>.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== GALLERY SECTION ==================== -->
+  <section id="gallery" class="py-20 bg-slate-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4" data-aos="fade-up">See It In Action</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+          Video of AttentioLight in action
+        </p>
+        <div class="w-20 h-1 bg-azure-500 mx-auto rounded-full mt-4" data-aos="fade-up" data-aos-delay="150"></div>
+      </div>
+      
+      <!-- Main Video/Demo -->
+      <div class="max-w-4xl mx-auto mb-12" data-aos="zoom-in" data-aos-delay="200">
+        <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden glow-azure">
+          <div class="aspect-video">
+            <iframe 
+              class="w-full h-full" 
+              src="https://www.youtube.com/embed/LJZ0nOodd7I" 
+              title="AttentioLight Demo"
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Photo Gallery -->
+      <div>
+        <h3 class="text-xl font-semibold text-white mb-6 text-center" data-aos="fade-up">Photo Gallery</h3>
+        <p class="text-slate-400 text-center mb-6" data-aos="fade-up" data-aos-delay="50">Pictures from development and production</p>
+        <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+          <div class="group break-inside-avoid" data-aos="fade-up" data-aos-delay="100">
+            <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 group-hover:border-azure-500 transition-all">
+              <img src="assets/images/presentation/presentation_001.jpg" alt="Production photo" class="w-full h-auto">
+            </div>
+          </div>
+          <div class="group break-inside-avoid" data-aos="fade-up" data-aos-delay="200">
+            <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 group-hover:border-azure-500 transition-all">
+              <img src="assets/images/presentation/presentation_002.jpg" alt="Production photo" class="w-full h-auto">
+            </div>
+          </div>
+          <div class="group break-inside-avoid" data-aos="fade-up" data-aos-delay="300">
+            <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 group-hover:border-azure-500 transition-all">
+              <img src="assets/images/presentation/presentation_003.jpg" alt="Presentation photo" class="w-full h-auto">
+            </div>
+          </div>
+          <div class="group break-inside-avoid" data-aos="fade-up" data-aos-delay="400">
+            <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 group-hover:border-azure-500 transition-all">
+              <img src="assets/images/presentation/presentation_004.jpg" alt="Presentation photo" class="w-full h-auto">
+            </div>
+          </div>
+          <div class="group break-inside-avoid" data-aos="fade-up" data-aos-delay="500">
+            <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 group-hover:border-azure-500 transition-all">
+              <img src="assets/images/presentation/presentation_005.jpg" alt="Presentation photo" class="w-full h-auto">
+            </div>
+          </div>
+          <div class="group break-inside-avoid" data-aos="fade-up" data-aos-delay="600">
+            <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 group-hover:border-azure-500 transition-all">
+              <img src="assets/images/presentation/presentation_006.jpg" alt="Presentation photo" class="w-full h-auto">
+            </div>
+          </div>
+          <div class="group break-inside-avoid" data-aos="fade-up" data-aos-delay="700">
+            <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 group-hover:border-azure-500 transition-all">
+              <img src="assets/images/presentation/presentation_007.jpg" alt="Presentation photo" class="w-full h-auto">
+            </div>
+          </div>
+          <div class="group break-inside-avoid" data-aos="fade-up" data-aos-delay="700">
+            <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 group-hover:border-azure-500 transition-all">
+              <img src="assets/images/presentation/presentation_008.png" alt="Presentation photo" class="w-full h-auto">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== THE ROAD AHEAD ==================== -->
+  <section id="roadmap" class="py-20 bg-slate-800/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4" data-aos="fade-up">The Road Ahead</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+          Future plans and expansion for the project
+        </p>
+        <div class="w-20 h-1 bg-azure-500 mx-auto rounded-full mt-4" data-aos="fade-up" data-aos-delay="150"></div>
+      </div>
+      
+      <!-- Content -->
+      <p class="text-slate-300 text-center max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="200">
+        AttentioLight is just the beginning. Future development plans include a CLI tool for advanced configuration and diagnostics, a dedicated Linux application for seamless desktop integration, and an Android application for mobile control. Wireless connectivity through WiFi and Bluetooth Low Energy (BLE) is on the roadmap, along with server integration for centralized management. Additionally, a web UI and server development will enable browser-based control and monitoring, making a more versatile and accessible ecosystem across platforms.
+      </p>
+    </div>
+  </section>
+
+  <!-- ==================== GET IN TOUCH ==================== -->
+  <section id="contact" class="py-20 bg-slate-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4" data-aos="fade-up">Get in Touch</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="50">Interested in working together or have questions about the project?</p>
+        <div class="w-20 h-1 bg-azure-500 mx-auto rounded-full mt-4" data-aos="fade-up" data-aos-delay="100"></div>
+      </div>
+      
+      <!-- Contact Text -->
+      <p class="text-slate-300 text-center max-w-2xl mx-auto mb-12" data-aos="fade-up" data-aos-delay="150">
+        Whether you're interested in collaboration, need consultation on embedded systems, firmware, or hardware design, or simply have questions about the project — I'd love to hear from you. Feel free to reach out and let's start a conversation.
+      </p>
+      
+      <!-- CTA Button -->
+      <div class="text-center" data-aos="fade-up" data-aos-delay="500">
+        <a href="mailto:inquiry.engemil@gmail.com" class="inline-flex items-center space-x-2 bg-azure-500 hover:bg-azure-600 text-white font-semibold px-8 py-3 rounded-lg transition-colors glow-azure-sm hover:glow-azure">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          <span>Send an Inquiry</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="py-12 bg-slate-800/50 border-t border-slate-700">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col items-center">
+        
+        <!-- Logo -->
+        <a href="#" class="flex items-center space-x-2 mb-6">
+          
+          <span class="text-xl font-semibold text-white">AttentioLight</span>
+        </a>
+        
+        <!-- Links -->
+        <div class="flex flex-wrap justify-center gap-6 mb-8">
+          <a href="https://github.com/engemil/attentiolight-1-hardware" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-azure-400 transition-colors">Hardware</a>
+          <a href="https://github.com/engemil/attentiolight-1-firmware" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-azure-400 transition-colors">Firmware</a>
+          <a href="https://github.com/engemil/ee_stm32_bootloader" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-azure-400 transition-colors">Bootloader</a>
+          <a href="https://cad.onshape.com/documents/69d5f926af4505f11014dd95/w/1130b3c1ea8f57afbf093472/e/eb91ab0ed3a92b95b73643b1" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-azure-400 transition-colors">CAD Design</a>
+          <a href="https://makerworld.com/en/models/2448130-attentiolight-1-enclosure-1#profileId-2687342" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-azure-400 transition-colors">3D-Print Files</a>
+        </div>
+        
+        <!-- Divider -->
+        <div class="w-full max-w-xs h-px bg-slate-700 mb-8"></div>
+        
+        <!-- Creator Credit -->
+        <div class="text-center">
+          <p class="text-slate-400 mb-4">
+            Made by 
+            <a href="https://engemil.io" target="_blank" rel="noopener noreferrer" class="text-azure-400 hover:text-azure-300 transition-colors font-mono">EngEmil.io</a>
+          </p>
+          
+          <!-- Social Media Links -->
+          <div class="flex items-center justify-center gap-6 mb-6">
+            <!-- GitHub -->
+            <a href="https://github.com/engemil" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-azure-400 transition-colors" title="GitHub">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/>
+              </svg>
+            </a>
+            <!-- YouTube -->
+            <a href="https://www.youtube.com/@EngEmil" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-azure-400 transition-colors" title="YouTube">
+              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+            </a>
+            <!-- Email -->
+            <a href="mailto:inquiry.engemil@gmail.com" class="text-slate-400 hover:text-azure-400 transition-colors" title="Email">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+            </a>
+          </div>
+          
+          <!-- Sponsor -->
+          <p class="text-slate-500 text-sm mb-4">
+            Support this project on 
+            <a href="https://ko-fi.com/engemil" target="_blank" rel="noopener noreferrer" class="text-azure-400 hover:text-azure-300 transition-colors">Ko-fi</a>
+          </p>
+          
+          <p class="text-slate-500 text-sm">&copy; 2026 EngEmil - AttentioLight Open-Source Project</p>
+        </div>
+        
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== SCRIPTS ==================== -->
+  
+  <!-- AOS - Animate On Scroll -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  
+  <script>
+    // Initialize AOS
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 100,
+    });
+    
+    // Header scroll effect
+    const header = document.getElementById('header');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.classList.add('bg-slate-900/95', 'backdrop-blur-sm', 'shadow-lg');
+      } else {
+        header.classList.remove('bg-slate-900/95', 'backdrop-blur-sm', 'shadow-lg');
+      }
+    });
+    
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+    
+    // Close mobile menu on link click
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+      });
+    });
+    
+    // Hardware tabs
+    const hardwareTabs = document.querySelectorAll('.hardware-tab');
+    const hardwarePanels = document.querySelectorAll('.hardware-panel');
+    
+    hardwareTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const targetTab = tab.dataset.tab;
+        
+        // Update tab styles
+        hardwareTabs.forEach(t => {
+          t.classList.remove('tab-active');
+          t.classList.add('text-slate-400');
+        });
+        tab.classList.add('tab-active');
+        tab.classList.remove('text-slate-400');
+        
+        // Show target panel
+        hardwarePanels.forEach(panel => {
+          panel.classList.add('hidden');
+        });
+        document.getElementById(`tab-${targetTab}`).classList.remove('hidden');
+      });
+    });
+    
+    // PCB 3D View sub-tabs
+    const pcbSubTabs = document.querySelectorAll('.pcb-sub-tab');
+    const pcbBoardPanels = document.querySelectorAll('.pcb-board-panel');
+    
+    pcbSubTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const targetBoard = tab.dataset.board;
+        
+        // Update sub-tab styles
+        pcbSubTabs.forEach(t => {
+          t.classList.remove('sub-tab-active');
+        });
+        tab.classList.add('sub-tab-active');
+        
+        // Show target board panel
+        pcbBoardPanels.forEach(panel => {
+          panel.classList.add('hidden');
+        });
+        document.getElementById(`pcb-${targetBoard}`).classList.remove('hidden');
+      });
+    });
+    
+    // Schematic sub-tabs
+    const schematicSubTabs = document.querySelectorAll('.schematic-sub-tab');
+    const schematicBoardPanels = document.querySelectorAll('.schematic-board-panel');
+    
+    schematicSubTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const targetBoard = tab.dataset.board;
+        
+        // Update sub-tab styles
+        schematicSubTabs.forEach(t => {
+          t.classList.remove('sub-tab-active');
+        });
+        tab.classList.add('sub-tab-active');
+        
+        // Show target board panel
+        schematicBoardPanels.forEach(panel => {
+          panel.classList.add('hidden');
+        });
+        document.getElementById(`schematic-${targetBoard}`).classList.remove('hidden');
+      });
+    });
+    
+    // PCB 2D View sub-tabs
+    const pcb2dSubTabs = document.querySelectorAll('.pcb2d-sub-tab');
+    const pcb2dBoardPanels = document.querySelectorAll('.pcb2d-board-panel');
+    
+    pcb2dSubTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const targetBoard = tab.dataset.board;
+        
+        // Update sub-tab styles
+        pcb2dSubTabs.forEach(t => {
+          t.classList.remove('sub-tab-active');
+        });
+        tab.classList.add('sub-tab-active');
+        
+        // Show target board panel
+        pcb2dBoardPanels.forEach(panel => {
+          panel.classList.add('hidden');
+        });
+        document.getElementById(`pcb2d-${targetBoard}`).classList.remove('hidden');
+      });
+    });
+    
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href === '#' || href.includes('placeholder')) return;
+        
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          const headerOffset = 80;
+          const elementPosition = target.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
