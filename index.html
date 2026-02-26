@@ -147,6 +147,16 @@
       transform: translateX(8px);
       box-shadow: -4px 0 0 #38bdf8;
     }
+    
+    /* Model loading overlay centering */
+    .model-loading-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    }
   </style>
 </head>
 
@@ -830,32 +840,73 @@
           
           <!-- Mainboard 3D View -->
           <div id="pcb-mainboard" class="pcb-board-panel">
-            <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden">
+            <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden relative">
               <model-viewer
-                src="assets/3dview/attentiolight-1-mainboard1.glb"
+                id="model-mainboard"
+                src="assets/3dview/attentiolight-1-mainboard1-compressed.glb"
                 alt="AttentioLight Mainboard-1 3D Model"
                 camera-controls
                 loading="lazy"
                 shadow-intensity="0"
                 exposure="0.8"
-                style="width: 100%; height: 600px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);"
-              ></model-viewer>
+                style="width: 100%; height: min(600px, 70vh); background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);"
+              >
+                <!-- Loading indicator -->
+                <div class="model-loading-overlay" slot="poster">
+                  <div class="flex flex-col items-center justify-center h-full">
+                    <svg class="animate-spin h-10 w-10 text-cyan-400 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <p class="text-slate-400 text-sm">Loading 3D model...</p>
+                    <p class="text-slate-500 text-xs mt-1">This may take a moment on mobile devices</p>
+                  </div>
+                </div>
+              </model-viewer>
+              <!-- Error overlay (hidden by default) -->
+              <div id="error-mainboard" class="model-error-overlay hidden absolute inset-0 flex flex-col items-center justify-center bg-slate-900/90">
+                <svg class="h-12 w-12 text-red-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <p class="text-slate-300 text-sm mb-2">Failed to load 3D model</p>
+                <p class="text-slate-500 text-xs text-center px-4">The model may be too large for your device. Try viewing on desktop or check the 2D view instead.</p>
+              </div>
             </div>
             <p class="text-center text-slate-400 text-sm mt-4">Click and drag to rotate. Scroll to zoom. Right-click to pan.</p>
           </div>
           
           <!-- LED Module 3D View -->
           <div id="pcb-ledmodule" class="pcb-board-panel hidden">
-            <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden">
+            <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden relative">
               <model-viewer
-                src="assets/3dview/attentiolight-1-1ledmodule1.glb"
+                id="model-ledmodule"
+                src="assets/3dview/attentiolight-1-1ledmodule1-compressed.glb"
                 alt="AttentioLight 1-LED Module-1 3D Model"
                 camera-controls
                 loading="lazy"
                 shadow-intensity="0"
                 exposure="0.8"
-                style="width: 100%; height: 600px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);"
-              ></model-viewer>
+                style="width: 100%; height: min(600px, 70vh); background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);"
+              >
+                <!-- Loading indicator -->
+                <div class="model-loading-overlay" slot="poster">
+                  <div class="flex flex-col items-center justify-center h-full">
+                    <svg class="animate-spin h-10 w-10 text-cyan-400 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <p class="text-slate-400 text-sm">Loading 3D model...</p>
+                  </div>
+                </div>
+              </model-viewer>
+              <!-- Error overlay (hidden by default) -->
+              <div id="error-ledmodule" class="model-error-overlay hidden absolute inset-0 flex flex-col items-center justify-center bg-slate-900/90">
+                <svg class="h-12 w-12 text-red-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <p class="text-slate-300 text-sm mb-2">Failed to load 3D model</p>
+                <p class="text-slate-500 text-xs text-center px-4">Try viewing on desktop or check the 2D view instead.</p>
+              </div>
             </div>
             <p class="text-center text-slate-400 text-sm mt-4">Click and drag to rotate. Scroll to zoom. Right-click to pan.</p>
           </div>
@@ -1798,6 +1849,30 @@
           });
         }
       });
+    });
+    
+    // 3D Model error handling
+    const modelViewers = [
+      { viewer: 'model-mainboard', error: 'error-mainboard' },
+      { viewer: 'model-ledmodule', error: 'error-ledmodule' }
+    ];
+    
+    modelViewers.forEach(({ viewer, error }) => {
+      const modelViewer = document.getElementById(viewer);
+      const errorOverlay = document.getElementById(error);
+      
+      if (modelViewer && errorOverlay) {
+        modelViewer.addEventListener('error', (event) => {
+          console.error(`3D model error (${viewer}):`, event.detail);
+          errorOverlay.classList.remove('hidden');
+        });
+        
+        // Also handle WebGL context loss (common on mobile)
+        modelViewer.addEventListener('webglcontextlost', () => {
+          console.error(`WebGL context lost (${viewer})`);
+          errorOverlay.classList.remove('hidden');
+        });
+      }
     });
   </script>
 
