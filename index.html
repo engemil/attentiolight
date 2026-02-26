@@ -16,6 +16,9 @@
       darkMode: 'class',
       theme: {
         extend: {
+          screens: {
+            'nav': '1170px',
+          },
           colors: {
             azure: {
               300: '#7dd3fc',
@@ -177,7 +180,7 @@
         </a>
         
         <!-- Desktop Navigation -->
-        <nav class="hidden md:flex items-center space-x-8">
+        <nav class="hidden nav:flex items-center space-x-8">
           <a href="#features" class="text-slate-300 hover:text-azure-400 transition-colors">Features</a>
           <a href="#controls" class="text-slate-300 hover:text-azure-400 transition-colors">Controls</a>
           <a href="#hardware" class="text-slate-300 hover:text-azure-400 transition-colors">Hardware</a>
@@ -188,7 +191,7 @@
         </nav>
         
         <!-- Creator & Social Links -->
-        <div class="hidden md:flex items-center space-x-4">
+        <div class="hidden nav:flex items-center space-x-4">
           <span class="text-slate-400 text-sm">Made by</span>
           <a href="https://engemil.io" target="_blank" rel="noopener noreferrer" class="flex items-center space-x-1 text-azure-400 hover:text-azure-300 transition-colors font-mono text-sm">
             <span>EngEmil.io</span>
@@ -220,7 +223,7 @@
         </div>
         
         <!-- Mobile Menu Button -->
-        <button id="mobile-menu-btn" class="md:hidden p-3 text-slate-400 hover:text-azure-400 transition-colors flex-shrink-0">
+        <button id="mobile-menu-btn" class="nav:hidden p-3 text-slate-400 hover:text-azure-400 transition-colors flex-shrink-0">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
             <path id="menu-icon" d="M4 6h16M4 12h16M4 18h16"/>
           </svg>
@@ -229,7 +232,7 @@
     </div>
     
     <!-- Mobile Menu -->
-    <div id="mobile-menu" class="hidden md:hidden bg-slate-900/95 backdrop-blur-sm border-t border-slate-800">
+    <div id="mobile-menu" class="hidden nav:hidden bg-slate-900/95 backdrop-blur-sm border-t border-slate-800">
       <div class="px-4 py-4 space-y-3">
         <a href="#features" class="block text-slate-300 hover:text-azure-400 transition-colors py-2">Features</a>
         <a href="#controls" class="block text-slate-300 hover:text-azure-400 transition-colors py-2">Controls</a>
