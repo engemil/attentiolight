@@ -76,7 +76,7 @@
     
     /* Azure glow effect */
     .glow-azure {
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.3), 0 0 40px rgba(56, 189, 248, 0.1);
+      box-shadow: 0 0 60px rgba(56, 189, 248, 0.1), 0 0 120px rgba(56, 189, 248, 0.05), 0 0 180px rgba(56, 189, 248, 0.02);
     }
     .glow-azure-sm {
       box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
@@ -187,7 +187,7 @@
           <a href="#enclosure" class="text-slate-300 hover:text-azure-400 transition-colors">Enclosure</a>
           <a href="#firmware" class="text-slate-300 hover:text-azure-400 transition-colors">Firmware</a>
           <a href="#production" class="text-slate-300 hover:text-azure-400 transition-colors">Production</a>
-          <a href="#gallery" class="text-slate-300 hover:text-azure-400 transition-colors">Demo</a>
+          <a href="#gallery" class="text-slate-300 hover:text-azure-400 transition-colors">Photos</a>
         </nav>
         
         <!-- Creator & Social Links -->
@@ -255,10 +255,10 @@
   </header>
 
   <!-- ==================== HERO SECTION ==================== -->
-  <section id="hero" class="min-h-screen flex items-center justify-center bg-gradient-animated relative overflow-hidden">
+  <section id="hero" class="min-h-screen flex flex-col items-center justify-center bg-gradient-animated relative overflow-hidden">
     <!-- Background glow effect -->
     <div class="absolute inset-0 overflow-hidden">
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vw] sm:w-[450px] sm:h-[450px] lg:w-[600px] lg:h-[600px] bg-azure-500/10 rounded-full blur-3xl pulse-glow"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120vw] h-[120vw] sm:w-[600px] sm:h-[600px] lg:w-[800px] lg:h-[800px] bg-azure-500/5 rounded-full blur-[150px] pulse-glow"></div>
     </div>
     
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
@@ -292,12 +292,9 @@
          -->
 
         <!-- CTA Buttons -->
-        <div class="flex flex-col items-center gap-4 mb-16" data-aos="fade-up" data-aos-duration="800" data-aos-delay="400">
+        <div class="flex flex-col items-center gap-4 mb-2" data-aos="fade-up" data-aos-duration="800" data-aos-delay="400">
           <!-- Primary row -->
           <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="#gallery" class="px-8 py-3 bg-azure-500 hover:bg-azure-600 text-white font-medium rounded-lg transition-all glow-azure-sm hover:glow-azure">
-              View Demo
-            </a>
             <a href="#features" class="px-8 py-3 border border-slate-600 hover:border-azure-500 text-slate-300 hover:text-azure-400 font-medium rounded-lg transition-all">
               Features
             </a>
@@ -322,30 +319,27 @@
           </div>
         </div>
         
-        <!-- Hero Image/Video -->
-        <div class="max-w-3xl mx-auto" data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="500">
-          <div class="relative rounded-2xl overflow-hidden glow-azure">
-            <img 
-              src="assets/images/hero/hero_image_001.png" 
-              alt="AttentioLight LED box in action"
-              class="w-full h-auto"
-            >
-            <!-- Or use a video:
-            <video autoplay loop muted playsinline class="w-full h-auto">
-              <source src="assets/videos/hero-demo.mp4" type="video/mp4">
-            </video>
-            -->
+      </div>
+    </div>
+    
+    <!-- Hero Video -->
+    <div class="w-full max-w-[95vw] sm:max-w-[75vw] px-4 pt-2 pb-6 sm:pt-4 sm:pb-8 relative z-10" data-aos="zoom-in" data-aos-duration="1000" data-aos-delay="500">
+      <div class="relative rounded-2xl">
+        <div class="rounded-2xl overflow-hidden">
+          <div class="aspect-video">
+            <iframe 
+              class="w-full h-full" 
+              src="https://www.youtube.com/embed/LJZ0nOodd7I" 
+              title="AttentioLight Demo"
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
           </div>
         </div>
       </div>
     </div>
     
-    <!-- Scroll indicator -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-      <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-        <path d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
-      </svg>
-    </div>
   </section>
 
   <!-- ==================== FEATURES SECTION ==================== -->
@@ -1522,33 +1516,15 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Section Header -->
       <div class="text-center mb-16">
-        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4" data-aos="fade-up">See It In Action</h2>
+        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4" data-aos="fade-up">Photo Gallery</h2>
         <p class="text-slate-400 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
-          Video of AttentioLight in action
+          Pictures from development and production
         </p>
         <div class="w-20 h-1 bg-azure-500 mx-auto rounded-full mt-4" data-aos="fade-up" data-aos-delay="150"></div>
       </div>
       
-      <!-- Main Video/Demo -->
-      <div class="max-w-4xl mx-auto mb-12" data-aos="zoom-in" data-aos-delay="200">
-        <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden glow-azure">
-          <div class="aspect-video">
-            <iframe 
-              class="w-full h-full" 
-              src="https://www.youtube.com/embed/LJZ0nOodd7I" 
-              title="AttentioLight Demo"
-              frameborder="0" 
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen
-            ></iframe>
-          </div>
-        </div>
-      </div>
-      
       <!-- Photo Gallery -->
       <div>
-        <h3 class="text-xl font-semibold text-white mb-6 text-center" data-aos="fade-up">Photo Gallery</h3>
-        <p class="text-slate-400 text-center mb-6" data-aos="fade-up" data-aos-delay="50">Pictures from development and production</p>
         <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
           <div class="group break-inside-avoid" data-aos="fade-up" data-aos-delay="100">
             <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 group-hover:border-azure-500 transition-all">
