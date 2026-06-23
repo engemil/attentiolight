@@ -183,6 +183,7 @@
         <nav class="hidden nav:flex items-center space-x-8">
           <a href="#features" class="text-slate-300 hover:text-azure-400 transition-colors">Features</a>
           <a href="#controls" class="text-slate-300 hover:text-azure-400 transition-colors">Controls</a>
+          <a href="#software" class="text-slate-300 hover:text-azure-400 transition-colors">Software</a>
           <a href="#hardware" class="text-slate-300 hover:text-azure-400 transition-colors">Hardware</a>
           <a href="#enclosure" class="text-slate-300 hover:text-azure-400 transition-colors">Enclosure</a>
           <a href="#firmware" class="text-slate-300 hover:text-azure-400 transition-colors">Firmware</a>
@@ -236,6 +237,7 @@
       <div class="px-4 py-4 space-y-3">
         <a href="#features" class="block text-slate-300 hover:text-azure-400 transition-colors py-2">Features</a>
         <a href="#controls" class="block text-slate-300 hover:text-azure-400 transition-colors py-2">Controls</a>
+        <a href="#software" class="block text-slate-300 hover:text-azure-400 transition-colors py-2">Software</a>
         <a href="#hardware" class="block text-slate-300 hover:text-azure-400 transition-colors py-2">Hardware</a>
         <a href="#enclosure" class="block text-slate-300 hover:text-azure-400 transition-colors py-2">Enclosure</a>
         <a href="#firmware" class="block text-slate-300 hover:text-azure-400 transition-colors py-2">Firmware</a>
@@ -301,6 +303,9 @@
             <a href="#controls" class="px-8 py-3 border border-slate-600 hover:border-azure-500 text-slate-300 hover:text-azure-400 font-medium rounded-lg transition-all">
               How It Works
             </a>
+            <a href="#software" class="px-8 py-3 border border-slate-600 hover:border-azure-500 text-slate-300 hover:text-azure-400 font-medium rounded-lg transition-all">
+              Software
+            </a>
             <a href="#hardware" class="px-8 py-3 border border-slate-600 hover:border-azure-500 text-slate-300 hover:text-azure-400 font-medium rounded-lg transition-all">
               Hardware Design
             </a>
@@ -351,9 +356,31 @@
         <div class="w-20 h-1 bg-azure-500 mx-auto rounded-full" data-aos="fade-up" data-aos-delay="100"></div>
       </div>
       
-      <!-- Feature Cards - Row 1 -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-        
+      <!-- Feature Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+        <!-- Feature: Desktop App Control -->
+        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="100">
+          <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">Desktop App Control</h3>
+          <p class="text-slate-400 text-sm">Manage your light from a native Linux &amp; Windows app — presets, live monitoring, and firmware updates</p>
+        </div>
+
+        <!-- Feature: CLI Control -->
+        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="200">
+          <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-white mb-2">CLI Control</h3>
+          <p class="text-slate-400 text-sm">Script and automate over USB &amp; BLE with the Rust-based Attentio CLI for power users</p>
+        </div>
+
         <!-- Feature 1: Standalone Application -->
         <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="100">
           <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
@@ -373,20 +400,9 @@
             </svg>
           </div>
           <h3 class="text-lg font-semibold text-white mb-2">7 Modes</h3>
-          <p class="text-slate-400 text-sm">Solid Color, Brightness, Blinking, Pulsation, Effects, Traffic Light, and Night Light</p>
+          <p class="text-slate-400 text-sm">Standalone modes: Solid Color, Brightness, Blinking, Pulsation, Effects, Traffic Light, and Night Light</p>
         </div>
-        
-        <!-- Feature 3: 12 Colors -->
-        <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="300">
-          <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
-            <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
-              <path d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
-            </svg>
-          </div>
-          <h3 class="text-lg font-semibold text-white mb-2">12 Vibrant Colors</h3>
-          <p class="text-slate-400 text-sm">Azure, Blue, Purple, Magenta, Pink, Red, Orange, Yellow, Lime, Green, Spring, Cyan</p>
-        </div>
-        
+
         <!-- Feature 4: 13 Effects -->
         <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="400">
           <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
@@ -395,14 +411,9 @@
             </svg>
           </div>
           <h3 class="text-lg font-semibold text-white mb-2">13 Animated Effects</h3>
-          <p class="text-slate-400 text-sm">Rainbow, Color Cycle, Breathing, Candle, Fire, Lava Lamp, Day/Night, Ocean, Northern Lights, Thunder Storm, Police, Health Pulse, Memory</p>
+          <p class="text-slate-400 text-sm">Standalone effects: Rainbow, Color Cycle, Breathing, Candle, Fire, Lava Lamp, Day/Night, Ocean, Northern Lights, Thunder Storm, Police, Health Pulse, Memory</p>
         </div>
-        
-      </div>
-      
-      <!-- Feature Cards - Row 2 -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-        
+
         <!-- Feature 5: Diffused Lighting -->
         <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="100">
           <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
@@ -447,12 +458,7 @@
           <h3 class="text-lg font-semibold text-white mb-2">One-Button Control</h3>
           <p class="text-slate-400 text-sm">Elegant and intuitive control with a single button for all standalone functions</p>
         </div>
-        
-      </div>
-      
-      <!-- Feature Cards - Row 3 -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-        
+
         <!-- Feature 9: USB-C Powered -->
         <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="100">
           <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
@@ -500,12 +506,7 @@
           <p class="text-slate-400 text-sm">Settings saved to internal flash with CRC32 integrity checking. Factory default restoration available</p>
           -->
         </div>
-        
-      </div>
-      
-      <!-- Feature Cards - Row 4 (three cards centered) -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:max-w-4xl lg:mx-auto">
-        
+
         <!-- Feature 13: Low Power Mode -->
         <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="100">
           <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center mb-4">
@@ -550,11 +551,61 @@
       <div class="text-center mb-16">
         <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4" data-aos="fade-up">How It Works</h2>
         <p class="text-slate-400 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
-          Simple one-button control for all modes and settings in Standalone operation. No app or external device needed. Just plug in an USB-C cable and go!
+          Operate your AttentioLight in two ways &mdash; standalone with a single button, or remotely from your computer over USB-C or Bluetooth using the Attentio CLI or Desktop app.
         </p>
         <div class="w-20 h-1 bg-azure-500 mx-auto rounded-full mt-4" data-aos="fade-up" data-aos-delay="150"></div>
       </div>
       
+      <!-- Two Ways to Operate -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+
+        <!-- Standalone -->
+        <div class="bg-slate-800/50 rounded-xl border border-slate-700 p-8 hover:border-azure-500/50 transition-all flex flex-col" data-aos="fade-up" data-aos-delay="100">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-white">Standalone</h3>
+          </div>
+          <p class="text-slate-400 text-sm mb-4">Control everything directly on the device with a single button &mdash; no app or external device needed. Just plug in USB-C power and go.</p>
+          <ul class="space-y-2 text-slate-400 text-sm">
+            <li class="flex items-center gap-2"><span class="text-azure-400 flex-shrink-0">&bull;</span><span>7 modes cycled with one button</span></li>
+            <li class="flex items-center gap-2"><span class="text-azure-400 flex-shrink-0">&bull;</span><span>Short, long, and extended press actions</span></li>
+            <li class="flex items-center gap-2"><span class="text-azure-400 flex-shrink-0">&bull;</span><span>Settings saved on-device between sessions</span></li>
+          </ul>
+        </div>
+
+        <!-- Remote -->
+        <div class="bg-slate-800/50 rounded-xl border border-slate-700 p-8 hover:border-azure-500/50 transition-all flex flex-col" data-aos="fade-up" data-aos-delay="200">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+              <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                <path d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/>
+              </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-white">Remote</h3>
+          </div>
+          <p class="text-slate-400 text-sm mb-4">Connect over USB-C or Bluetooth Low Energy and control your device from a computer using the Attentio CLI or Desktop app.</p>
+          <ul class="space-y-2 text-slate-400 text-sm">
+            <li class="flex items-center gap-2"><span class="text-azure-400 flex-shrink-0">&bull;</span><span>Set any color (RGB/HSV) and brightness</span></li>
+            <li class="flex items-center gap-2"><span class="text-azure-400 flex-shrink-0">&bull;</span><span>Save and recall color presets</span></li>
+            <li class="flex items-center gap-2"><span class="text-azure-400 flex-shrink-0">&bull;</span><span>Power, low-power, and settings management</span></li>
+            <li class="flex items-center gap-2"><span class="text-azure-400 flex-shrink-0">&bull;</span><span>Firmware updates and live serial monitoring</span></li>
+          </ul>
+          <a href="#software" class="inline-flex items-center gap-2 mt-auto pt-4 text-azure-400 hover:text-azure-300 text-sm transition-colors">
+            <span>Explore the apps</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+      </div>
+
+      <!-- Standalone Operation Detail -->
+      <h3 class="text-2xl font-semibold text-white mb-8 text-center" data-aos="fade-up">Standalone Operation</h3>
+
       <!-- Button Controls & Mode Sequence Row -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
         
@@ -799,6 +850,238 @@
           
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ==================== SOFTWARE SECTION ==================== -->
+  <section id="software" class="py-20 bg-slate-800/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4" data-aos="fade-up">Software</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+          Companion apps to manage and control your AttentioLight from a computer — over USB-C or Bluetooth Low Energy
+        </p>
+        <div class="w-20 h-1 bg-azure-500 mx-auto rounded-full mt-4" data-aos="fade-up" data-aos-delay="150"></div>
+      </div>
+
+      <!-- ===== Attentio Desktop ===== -->
+      <div class="mb-8">
+        <!-- App heading -->
+        <div class="flex items-center gap-3 mb-6" data-aos="fade-up">
+          <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-white">Attentio Desktop</h3>
+            <p class="text-slate-400 text-sm">A native desktop app for Linux &amp; Windows — built with Flutter + Rust, connecting over USB &amp; BLE</p>
+          </div>
+        </div>
+
+        <!-- Lead screenshot -->
+        <div class="rounded-xl overflow-hidden border border-slate-700 mb-8 hover:border-azure-500/50 transition-colors" data-aos="fade-up" data-aos-delay="100">
+          <img
+            src="assets/images/attentio-desktop/attentio_desktop_devices_list_page_ble_device_and_desktop_background.png"
+            alt="Attentio Desktop device list with a paired BLE device"
+            class="w-full h-auto"
+          >
+        </div>
+
+        <!-- Curated highlights -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-10">
+
+          <!-- Highlight: LED Control -->
+          <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="100">
+            <div class="bg-slate-900/50 border-b border-slate-700 overflow-hidden">
+              <img src="assets/images/attentio-desktop/attentio_desktop_device_page_led_controls.png" alt="Attentio Desktop LED control panel" class="w-full h-auto">
+            </div>
+            <div class="p-5">
+              <h4 class="text-base font-semibold text-white mb-1">LED Control</h4>
+              <p class="text-slate-400 text-sm">Set colors with RGB &amp; HSV pickers and fine-tune brightness in real time.</p>
+            </div>
+          </div>
+
+          <!-- Highlight: Color Presets -->
+          <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="200">
+            <div class="bg-slate-900/50 border-b border-slate-700 overflow-hidden">
+              <img src="assets/images/attentio-desktop/attentio_desktop_device_page_presets.png" alt="Attentio Desktop color presets" class="w-full h-auto">
+            </div>
+            <div class="p-5">
+              <h4 class="text-base font-semibold text-white mb-1">Color Presets</h4>
+              <p class="text-slate-400 text-sm">Save and recall your favorite colors — presets persist between sessions.</p>
+            </div>
+          </div>
+
+          <!-- Highlight: Serial Monitor -->
+          <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="300">
+            <div class="bg-slate-900/50 border-b border-slate-700 overflow-hidden">
+              <img src="assets/images/attentio-desktop/attentio_desktop_device_page_serial_logging_and_monitoring.png" alt="Attentio Desktop serial logging and monitoring" class="w-full h-auto">
+            </div>
+            <div class="p-5">
+              <h4 class="text-base font-semibold text-white mb-1">Serial Monitor</h4>
+              <p class="text-slate-400 text-sm">Real-time two-pane protocol &amp; serial view for live diagnostics.</p>
+            </div>
+          </div>
+
+          <!-- Highlight: Firmware Updates -->
+          <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="100">
+            <div class="bg-slate-900/50 border-b border-slate-700 overflow-hidden">
+              <img src="assets/images/attentio-desktop/attentio_desktop_device_page_firmware_update.png" alt="Attentio Desktop firmware update" class="w-full h-auto">
+            </div>
+            <div class="p-5">
+              <h4 class="text-base font-semibold text-white mb-1">Firmware Updates</h4>
+              <p class="text-slate-400 text-sm">Flash new firmware over USB using the DFU protocol — no programmer needed.</p>
+            </div>
+          </div>
+
+          <!-- Highlight: Appearance & Settings -->
+          <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="200">
+            <div class="bg-slate-900/50 border-b border-slate-700 overflow-hidden">
+              <img src="assets/images/attentio-desktop/attentio_desktop_settings_page_apperance_and_application.png" alt="Attentio Desktop appearance and application settings" class="w-full h-auto">
+            </div>
+            <div class="p-5">
+              <h4 class="text-base font-semibold text-white mb-1">Appearance &amp; Settings</h4>
+              <p class="text-slate-400 text-sm">Customize theme and accent color, and enable autostart on login.</p>
+            </div>
+          </div>
+
+          <!-- Highlight: System Tray -->
+          <div class="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden hover:border-azure-500/50 transition-all hover:glow-azure-sm" data-aos="fade-up" data-aos-delay="300">
+            <div class="bg-slate-900/50 border-b border-slate-700 overflow-hidden">
+              <img src="assets/images/attentio-desktop/attentio_desktop_system_tray.png" alt="Attentio Desktop system tray integration" class="w-full h-auto">
+            </div>
+            <div class="p-5">
+              <h4 class="text-base font-semibold text-white mb-1">System Tray</h4>
+              <p class="text-slate-400 text-sm">Minimize to tray and keep quick access without cluttering your desktop.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- More screenshots gallery -->
+        <p class="text-slate-400 text-sm text-center mb-6" data-aos="fade-up">More from the app</p>
+        <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+          <div class="group break-inside-avoid" data-aos="fade-up" data-aos-delay="100">
+            <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 group-hover:border-azure-500 transition-all">
+              <img src="assets/images/attentio-desktop/attentio_desktop_device_page_top.png" alt="Attentio Desktop device page overview" class="w-full h-auto">
+            </div>
+          </div>
+          <div class="group break-inside-avoid" data-aos="fade-up" data-aos-delay="200">
+            <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 group-hover:border-azure-500 transition-all">
+              <img src="assets/images/attentio-desktop/attentio_desktop_device_page_controls.png" alt="Attentio Desktop device controls" class="w-full h-auto">
+            </div>
+          </div>
+          <div class="group break-inside-avoid" data-aos="fade-up" data-aos-delay="300">
+            <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 group-hover:border-azure-500 transition-all">
+              <img src="assets/images/attentio-desktop/attentio_desktop_device_page_controls_and_led_controls.png" alt="Attentio Desktop device controls and LED controls" class="w-full h-auto">
+            </div>
+          </div>
+          <div class="group break-inside-avoid" data-aos="fade-up" data-aos-delay="400">
+            <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 group-hover:border-azure-500 transition-all">
+              <img src="assets/images/attentio-desktop/attentio_desktop_device_page_metadata.png" alt="Attentio Desktop device metadata" class="w-full h-auto">
+            </div>
+          </div>
+          <div class="group break-inside-avoid" data-aos="fade-up" data-aos-delay="500">
+            <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 group-hover:border-azure-500 transition-all">
+              <img src="assets/images/attentio-desktop/attentio_desktop_devices_list_page_ble_device_paired.png" alt="Attentio Desktop paired BLE device" class="w-full h-auto">
+            </div>
+          </div>
+          <div class="group break-inside-avoid" data-aos="fade-up" data-aos-delay="600">
+            <div class="bg-slate-800 rounded-lg overflow-hidden border border-slate-700 group-hover:border-azure-500 transition-all">
+              <img src="assets/images/attentio-desktop/attentio_desktop_settings_page_application_and_about.png" alt="Attentio Desktop application and about settings" class="w-full h-auto">
+            </div>
+          </div>
+        </div>
+
+      <!-- Attentio Desktop Repo Link -->
+      <div class="flex flex-wrap justify-center gap-4 mt-8" data-aos="fade-up" data-aos-delay="800">
+        <a href="https://github.com/engemil/attentio-desktop" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm text-slate-300 transition-colors">
+          <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          View Attentio Desktop on GitHub
+        </a>
+      </div>
+
+      <!-- Divider between apps -->
+      <div class="w-full max-w-xs h-px bg-slate-700 mx-auto my-16"></div>
+
+      <!-- ===== Attentio CLI ===== -->
+      <div>
+        <!-- App heading -->
+        <div class="flex items-center gap-3 mb-6" data-aos="fade-up">
+          <div class="w-12 h-12 bg-azure-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
+            <svg class="w-6 h-6 text-azure-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-white">Attentio CLI</h3>
+            <p class="text-slate-400 text-sm">A fast command-line tool built in Rust — control and script your devices over USB &amp; BLE</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+
+          <!-- Screenshots -->
+          <div class="space-y-6" data-aos="fade-up" data-aos-delay="100">
+            <!-- help -->
+            <div class="rounded-lg overflow-hidden border border-slate-700 bg-slate-900 hover:border-azure-500/50 transition-colors">
+              <img src="assets/images/attentio-cli/attentio_cli_help.png" alt="Attentio CLI command reference" class="w-full h-auto">
+            </div>
+            <!-- list -->
+            <div class="rounded-lg overflow-hidden border border-slate-700 bg-slate-900 hover:border-azure-500/50 transition-colors">
+              <img src="assets/images/attentio-cli/attentio_cli_list.png" alt="Attentio CLI device discovery and listing" class="w-full h-auto">
+            </div>
+          </div>
+
+          <!-- Capability list -->
+          <div class="bg-slate-800/50 rounded-xl border border-slate-700 p-6" data-aos="fade-up" data-aos-delay="200">
+            <h4 class="text-lg font-semibold text-white mb-4">Capabilities</h4>
+            <ul class="space-y-3 text-slate-400 text-sm">
+              <li class="flex items-start gap-2">
+                <span class="text-azure-400 flex-shrink-0">•</span>
+                <span>Device discovery &amp; listing over USB and Bluetooth Low Energy</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-azure-400 flex-shrink-0">•</span>
+                <span>LED control — set RGB/HSV colors and adjust brightness</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-azure-400 flex-shrink-0">•</span>
+                <span>Power management — wake from or enter low-power mode</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-azure-400 flex-shrink-0">•</span>
+                <span>Settings management — list, get, set, and save/load to JSON</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-azure-400 flex-shrink-0">•</span>
+                <span>Firmware updates via DFU and bootloader mode entry</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-azure-400 flex-shrink-0">•</span>
+                <span>Interactive two-pane monitor dashboard with auto-reconnect</span>
+              </li>
+            </ul>
+
+            <a href="https://github.com/engemil/attentio-cli" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-6 text-azure-400 hover:text-azure-300 text-sm transition-colors">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              <span>View Attentio CLI on GitHub</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attentio CLI Repo Link -->
+      <div class="flex flex-wrap justify-center gap-4 mt-8" data-aos="fade-up" data-aos-delay="800">
+        <a href="https://github.com/engemil/attentio-cli" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm text-slate-300 transition-colors">
+          <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          View Attentio CLI on GitHub
+        </a>
+      </div>
+
     </div>
   </section>
 
@@ -1606,25 +1889,6 @@
     </div>
   </section>
 
-  <!-- ==================== THE ROAD AHEAD ==================== -->
-  <section id="roadmap" class="py-20 bg-slate-800/30">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Section Header -->
-      <div class="text-center mb-16">
-        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4" data-aos="fade-up">The Road Ahead</h2>
-        <p class="text-slate-400 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
-          Future plans and expansion for the project
-        </p>
-        <div class="w-20 h-1 bg-azure-500 mx-auto rounded-full mt-4" data-aos="fade-up" data-aos-delay="150"></div>
-      </div>
-      
-      <!-- Content -->
-      <p class="text-slate-300 text-center max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="200">
-        AttentioLight is just the beginning. Future development plans include a CLI tool for advanced configuration and diagnostics, a dedicated Linux application for seamless desktop integration, and an Android application for mobile control. Wireless connectivity through WiFi and Bluetooth Low Energy (BLE) is on the roadmap, along with server integration for centralized management. Additionally, a web UI and server development will enable browser-based control and monitoring, making a more versatile and accessible ecosystem across platforms.
-      </p>
-    </div>
-  </section>
-
   <!-- ==================== GET IN TOUCH ==================== -->
   <section id="contact" class="py-20 bg-slate-900">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1668,6 +1932,8 @@
           <a href="https://github.com/engemil/attentiolight-1-hardware" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-azure-400 transition-colors">Hardware</a>
           <a href="https://github.com/engemil/attentiolight-1-firmware" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-azure-400 transition-colors">Firmware</a>
           <a href="https://github.com/engemil/ee_stm32_bootloader" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-azure-400 transition-colors">Bootloader</a>
+          <a href="https://github.com/engemil/attentio-desktop" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-azure-400 transition-colors">Attentio Desktop</a>
+          <a href="https://github.com/engemil/attentio-cli" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-azure-400 transition-colors">Attentio CLI</a>
           <a href="https://cad.onshape.com/documents/69d5f926af4505f11014dd95/w/1130b3c1ea8f57afbf093472/e/eb91ab0ed3a92b95b73643b1" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-azure-400 transition-colors">CAD Design</a>
           <a href="https://makerworld.com/en/models/2448130-attentiolight-1-enclosure-1#profileId-2687342" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-azure-400 transition-colors">3D-Print Files</a>
         </div>
