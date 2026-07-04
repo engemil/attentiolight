@@ -1472,13 +1472,17 @@
       <div class="text-center mb-16">
         <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4" data-aos="fade-up">Firmware Architecture</h2>
         <p class="text-slate-400 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
-          Real-time firmware built with ChibiOS/RT on STM32, with bootloader integration for easy firmware updates with USB DFU.
+          Real-time firmware built with ChibiOS/RT on the STM32C071 host and ESP-IDF + FreeRTOS on the ESP32-C3 wireless module, bridged by a UART link. USB DFU bootloader integration for the host.
         </p>
         <div class="w-20 h-1 bg-azure-500 mx-auto rounded-full mt-4" data-aos="fade-up" data-aos-delay="150"></div>
       </div>
       
       <!-- Stack Diagram -->
       <div class="max-w-4xl mx-auto" data-aos="fade-up" data-aos-delay="200">
+        <!-- STM32 host sub-label -->
+        <div class="mb-3 text-center" data-aos="fade-up" data-aos-delay="250">
+          <span class="text-azure-400 font-mono text-xs font-semibold tracking-widest">STM32 HOST FIRMWARE</span>
+        </div>
         <div class="bg-slate-800/50 rounded-xl border border-slate-700 p-6 sm:p-8">
           
           <!-- Application Layer -->
@@ -1578,6 +1582,122 @@
             </div>
           </div>
         </div>
+
+        <!-- ESP32 Wireless Module Diagram -->
+        <div class="mt-12" data-aos="fade-up" data-aos-delay="100">
+          <!-- ESP32 sub-label -->
+          <div class="mb-3 text-center" data-aos="fade-up" data-aos-delay="150">
+            <span class="text-azure-400 font-mono text-xs font-semibold tracking-widest">ESP32 WIRELESS MODULE FIRMWARE</span>
+          </div>
+
+          <!-- Integration blurb -->
+          <p class="text-slate-400 text-sm max-w-3xl mx-auto text-center mb-6" data-aos="fade-up" data-aos-delay="200">
+            The Wireless Module (ESP32-C3) bridges the STM32 host to wireless control over a 921600&nbsp;baud UART link. It runs a NimBLE BLE peripheral advertising as <span class="font-mono text-azure-300">AttentioLight-1</span> with Just-Works pairing, LE Secure Connections, and bonding persisted in NVS &mdash; so a phone or host can drive the device with the same Attentio Protocol used over USB.
+          </p>
+
+          <div class="bg-slate-800/50 rounded-xl border border-slate-700 p-6 sm:p-8">
+
+            <!-- Application Layer -->
+            <div class="stack-layer bg-slate-700/50 border border-slate-600 rounded-lg p-4 mb-3 cursor-default" data-aos="fade-right" data-aos-delay="300">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div>
+                  <span class="text-azure-400 font-mono text-sm font-semibold">APPLICATION LAYER</span>
+                  <div class="mt-3 space-y-2">
+                    <div class="flex flex-wrap gap-2">
+                      <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">app_main</span>
+                      <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">UART / BLE Bring-up</span>
+                      <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">AP_CTRL Bridge</span>
+                      <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">STM32 Log Forward</span>
+                    </div>
+                  </div>
+                </div>
+                <span class="text-slate-500 text-xs sm:text-sm">User Code</span>
+              </div>
+            </div>
+
+            <!-- Application Components Layer -->
+            <div class="stack-layer bg-slate-700/50 border border-slate-600 rounded-lg p-4 mb-3 cursor-default" data-aos="fade-right" data-aos-delay="350">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div>
+                  <span class="text-azure-400 font-mono text-sm font-semibold">APPLICATION COMPONENTS</span>
+                  <div class="flex flex-wrap gap-2 mt-2">
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">al1_link (UART transport)</span>
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">al1_ble (NimBLE + GATT)</span>
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">ap_reasm</span>
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">al1_ble_ap_bridge</span>
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">al1_ble_gatt</span>
+                  </div>
+                </div>
+                <span class="text-slate-500 text-xs sm:text-sm">Components</span>
+              </div>
+            </div>
+
+            <!-- Shared Protocol Core Layer -->
+            <div class="stack-layer bg-slate-700/50 border border-slate-600 rounded-lg p-4 mb-3 cursor-default" data-aos="fade-right" data-aos-delay="400">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div>
+                  <span class="text-azure-400 font-mono text-sm font-semibold">SHARED PROTOCOL CORE</span>
+                  <div class="flex flex-wrap gap-2 mt-2">
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">Attentio Protocol</span>
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">CRC-8/CCITT</span>
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">ap_build_*</span>
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">ap_cmd_requires_claim</span>
+                  </div>
+                </div>
+                <span class="text-slate-500 text-xs sm:text-sm">Verbatim copy from STM32 repo</span>
+              </div>
+            </div>
+
+            <!-- Libraries Layer -->
+            <div class="stack-layer bg-slate-700/50 border border-slate-600 rounded-lg p-4 mb-3 cursor-default" data-aos="fade-right" data-aos-delay="450">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div>
+                  <span class="text-azure-400 font-mono text-sm font-semibold">LIBRARIES</span>
+                  <div class="flex flex-wrap gap-2 mt-2">
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">NimBLE host</span>
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">ESP-IDF WiFi stack (radio OFF)</span>
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">NVS (bond persistence)</span>
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">USB-Serial-JTAG console</span>
+                  </div>
+                </div>
+                <span class="text-slate-500 text-xs sm:text-sm">Libraries</span>
+              </div>
+            </div>
+
+            <!-- RTOS Layer -->
+            <div class="stack-layer bg-slate-700/50 border border-slate-600 rounded-lg p-4 mb-3 cursor-default" data-aos="fade-right" data-aos-delay="500">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div>
+                  <span class="text-azure-400 font-mono text-sm font-semibold">ESP-IDF + FREERTOS</span>
+                  <div class="flex flex-wrap gap-2 mt-2">
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">FreeRTOS kernel</span>
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">IDF HAL / drivers</span>
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">RISC-V port</span>
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">Partition table (factory + NVS)</span>
+                  </div>
+                </div>
+                <span class="text-slate-500 text-xs sm:text-sm">RTOS</span>
+              </div>
+            </div>
+
+            <!-- Hardware Layer -->
+            <div class="stack-layer bg-slate-700/50 border border-azure-500/50 rounded-lg p-4 cursor-default" data-aos="fade-right" data-aos-delay="600">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div>
+                  <span class="text-azure-400 font-mono text-sm font-semibold">ESP32-C3 WROOM-02 HARDWARE</span>
+                  <div class="flex flex-wrap gap-2 mt-2">
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">RISC-V (RV32IMC)</span>
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">160MHz</span>
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">4MB Flash</span>
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">WiFi b/g/n</span>
+                    <span class="px-2 py-1 bg-slate-600 text-slate-300 text-xs rounded">BLE 5</span>
+                  </div>
+                </div>
+                <span class="text-slate-500 text-xs sm:text-sm">MCU</span>
+              </div>
+            </div>
+          </div>
+        </div>
         
         <!-- Firmware Repo Links -->
         <div class="flex flex-wrap justify-center gap-4 mt-8" data-aos="fade-up" data-aos-delay="800">
@@ -1588,6 +1708,10 @@
           <a href="https://github.com/engemil/ee_stm32_bootloader" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm text-slate-300 transition-colors">
             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
             View Bootloader Repository
+          </a>
+          <a href="https://github.com/engemil/attentiolight-1-wireless-module-firmware" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm text-slate-300 transition-colors">
+            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            View Wireless Module Repository
           </a>
         </div>
       </div>
